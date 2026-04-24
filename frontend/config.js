@@ -4,17 +4,17 @@
 // All configuration keys should use UPPER_SNAKE_CASE for consistency
 const CONFIG = {
   // Model settings
-  MODEL_LLM: 'gpt-4.1-mini',
-  MODEL_RAGBOT: 'gpt-5.4',
+  MODEL_LLM: 'gpt-5.4-nano',
+  MODEL_RAGBOT: 'gpt-5.4-mini',
   //MODEL_RAGBOT: 'gpt-4.1-mini',
- 
-  
+
+
   // Generation settings
   TEMPERATURE: 0.3,
   LLM_MAX_RESULTS: 3,
   MAX_OUTPUT_TOKENS: 1000,
   MAX_RESULTS_DISPLAY: 100,
-  
+
   // Feature flags
   OPENAI_RAGBOT: 'ALLWV',
   FULL_BADGES: false,
@@ -47,7 +47,7 @@ const STORAGE_KEY = 'appConfig_main';
 
   // Expose configuration globally
   window.CONFIG = runtimeConfig;
-  
+
   // Backward compatibility (deprecated - modules should use window.CONFIG instead)
   window.USER_MAX_RESULTS = Number(runtimeConfig.MAX_RESULTS_DISPLAY) || CONFIG.MAX_RESULTS_DISPLAY;
   window.USER_TEMPERATURE = Number(runtimeConfig.TEMPERATURE) || CONFIG.TEMPERATURE;
@@ -137,7 +137,7 @@ const VERBETES_URL = 'https://arquivos.enciclopediadaconscienciologia.org/verbet
 
 
 const INSTRUCTIONS_RAGBOT = `
-System: 
+System:
 Você é um assistente de IA **direto**, **claro** e **produtivo**, especializado em **Conscienciologia (Waldo Vieira)**, voltado à conversa, educação e apoio a **estudantes** e **acadêmicos**.
 
 ## Princípios gerais

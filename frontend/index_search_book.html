@@ -95,7 +95,7 @@
                     
                     <strong>Dicas de Pesquisa:</strong><br>
                     1.  Clique no ícone de <em>configurações</em> acima para escolher os <strong>livros</strong> para pesquisa.<br>
-                    2.  Máximo de 5 livros simultâneos por pesquisa.<br>
+                    2.  Máximo de 3 livros simultâneos por pesquisa.<br>
                     3.  Entre com a palavra ou frase <em>exata</em> para buscar nos textos.<br>
                     4.  Use termos curtos e específicos para resultados mais precisos.<br>
                     5.  Use operadores lógicos & (and), | (or), ! (not), * (wildcard) para busca avançada.<br>
@@ -278,8 +278,8 @@
     
         // ================================================================
         // 2. Toggle de livros (delegação de eventos para lidar com elementos dinâmicos)
-        //    Regra: no máximo 5 book-pill ativos simultaneamente.
-        //    Novo comportamento: ao atingir 5 ativos, o usuário precisa
+        //    Regra: no máximo 3 book-pill ativos simultaneamente.
+        //    Novo comportamento: ao atingir 3 ativos, o usuário precisa
         //    desselecionar manualmente um deles para escolher outro.
         // ================================================================
         document.querySelector('.book-checkboxes').addEventListener('click', function(e) {
@@ -298,13 +298,13 @@
                     return;
                 }
 
-                // Se já houver 5 ativos e o usuário clicar em um 6º,
+                // Se já houver 3 ativos e o usuário clicar em um 4º,
                 // não faz nada: é preciso primeiro desselecionar manualmente.
-                if (activePills.length >= 5) {
+                if (activePills.length >= 3) {
                     return;
                 }
 
-                // Ativa o novo pill (ainda abaixo do limite de 5)
+                // Ativa o novo pill (ainda abaixo do limite de 3)
                 pill.classList.add('active');
             }
         });
@@ -352,7 +352,7 @@
                 saved.module = 'book';
                 localStorage.setItem(window.STORAGE_KEY, JSON.stringify(saved));
     
-                // Livros (clamp: garantir no máximo 5 ativos ao aplicar config + timestamps)
+                // Livros (clamp: garantir no máximo 3 ativos ao aplicar config + timestamps)
                 if (Array.isArray(saved.books)) {
                     const set = new Set(saved.books);
                     const pills = Array.from(document.querySelectorAll('.book-pill'));
@@ -360,7 +360,7 @@
                     let baseTs = Date.now();
 
                     pills.forEach(pill => {
-                        const shouldActivate = set.has(pill.dataset.value) && activeCount < 5;
+                        const shouldActivate = set.has(pill.dataset.value) && activeCount < 3;
                         pill.classList.toggle('active', shouldActivate);
                         if (shouldActivate) {
                             activeCount++;
