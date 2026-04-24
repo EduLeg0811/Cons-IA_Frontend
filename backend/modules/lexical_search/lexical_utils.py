@@ -27,21 +27,28 @@ from __future__ import annotations
 # 1) Constantes & imports
 # =============================================================================================
 from dataclasses import dataclass, asdict
+from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, Iterable, Iterator, List, Optional, Tuple
 
+import json
 import logging
 import re
 import unicodedata
 
 import pandas as pd
 
-from utils.config import FILES_SEARCH_DIR, MAX_OVERALL_SEARCH_RESULTS
+from utils.config import (
+    FILES_SEARCH_DIR,
+    FILES_SEARCH_PREPROCESSED_DIR,
+    MAX_OVERALL_SEARCH_RESULTS,
+)
 
 logger = logging.getLogger("cons-ai")
 
 # Operadores e precedência: NOT > AND > OR
 _BOOL_OPS: Dict[str, int] = {"!": 3, "&": 2, "|": 1}
+_PREPROCESSED_SUFFIX = ".ndjson"
 
 
 # =============================================================================================
@@ -100,10 +107,9 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
     # -----------------------------------------------------------------------------
     # Logging inicial
     # -----------------------------------------------------------------------------
-    logger.info("\n" + "─" * 80)
-    logger.info("📚 LEXICAL SEARCH REQUEST")
-    logger.info(f"🔍 Termo: {search_term}")
-    logger.info(f"📘 Livros solicitados: {', '.join(source)}")
+    logger.info("[lexical_search_in_files] Request started")
+    logger.info(f"[lexical_search_in_files] Term: {search_term}")
+    logger.info(f"[lexical_search_in_files] Requested books: {', '.join(source)}")
 
     selected_files: List[Path] = []
     missing_books: List[str] = []
@@ -116,7 +122,7 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
             missing_books.append(book)
 
     if missing_books:
-        logger.warning(f"⚠️ Livros sem arquivo correspondente: {', '.join(missing_books)}")
+        logger.warning(f"[lexical_search_in_files] Missing files for books: {', '.join(missing_books)}")
 
     if not selected_files:
         raise FileNotFoundError(
@@ -137,8 +143,7 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
 
         try:
             if ext == ".xlsx":
-                rows = read_excel_first_sheet(path)
-                matches = search_excel_rows(rows, search_term)
+                matches = search_excel_file(path, search_term)
 
                 #logger.info(f"[lexical_search_in_files] search_term: {search_term}")
                 #logger.info(f"[lexical_search_in_files] matches: {matches}")
@@ -274,6 +279,69 @@ def read_text_file(path: Path, encodings: Tuple[str, ...] = ("utf-8", "cp1252"))
     raise Exception(f"Não foi possível decodificar {path} ({encodings}). Último erro: {last_error}")
 
 
+def normalize_excel_row(row: Dict[str, Any], paragraph_number: int) -> Dict[str, Any]:
+    """Normaliza chaves/valores de uma linha do Excel para uso no runtime/cache."""
+    row_norm = {str(k).lower(): ("" if v is None else str(v)) for k, v in row.items()}
+    row_norm["paragraph_number"] = paragraph_number
+    return row_norm
+
+
+def resolve_excel_text_key(row: Dict[str, Any]) -> Optional[str]:
+    """Retorna a primeira coluna textual real da linha, ignorando campos auxiliares."""
+    for key in row.keys():
+        if key == "paragraph_number" or str(key).startswith("__"):
+            continue
+        return str(key)
+    return None
+
+
+def normalize_excel_match_text(text: str) -> str:
+    """Normaliza o texto principal da linha para busca booleana."""
+    return normalize_for_match(strip_markdown_simple(text))
+
+
+def sanitize_excel_metadata_row(row: Dict[str, Any]) -> Dict[str, Any]:
+    """Remove campos auxiliares internos antes de devolver metadados ao frontend."""
+    return {k: v for k, v in row.items() if not str(k).startswith("__")}
+
+
+def get_preprocessed_excel_path(path: Path) -> Path:
+    """Resolve o caminho do cache NDJSON correspondente a um XLSX."""
+    return Path(FILES_SEARCH_PREPROCESSED_DIR) / f"{path.stem}{_PREPROCESSED_SUFFIX}"
+
+
+def is_preprocessed_excel_fresh(source_path: Path, preprocessed_path: Path) -> bool:
+    """Verifica se o cache NDJSON existe e estÃ¡ atualizado em relaÃ§Ã£o ao XLSX."""
+    if not preprocessed_path.exists():
+        return False
+    try:
+        return preprocessed_path.stat().st_mtime >= source_path.stat().st_mtime
+    except OSError:
+        return False
+
+
+def build_preprocessed_excel_cache(source_path: Path, output_path: Optional[Path] = None) -> Path:
+    """
+    Converte um XLSX em NDJSON UTF-8 para leitura leve em streaming no runtime.
+    Cada linha preserva os metadados originais e adiciona um campo auxiliar
+    com o texto principal jÃ¡ normalizado para match.
+    """
+    source_path = Path(source_path)
+    output_path = Path(output_path) if output_path is not None else get_preprocessed_excel_path(source_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    df = pd.read_excel(source_path, sheet_name=0, dtype=str).fillna("")
+    with output_path.open("w", encoding="utf-8", newline="\n") as handle:
+        for i, row in enumerate(df.to_dict(orient="records"), start=1):
+            row_norm = normalize_excel_row(row, i)
+            text_key = resolve_excel_text_key(row_norm)
+            text_value = str(row_norm.get(text_key, "")) if text_key else ""
+            row_norm["__match_text_norm"] = normalize_excel_match_text(text_value)
+            handle.write(json.dumps(row_norm, ensure_ascii=False) + "\n")
+
+    return output_path
+
+
 def read_excel_first_sheet(path: Path) -> List[Dict[str, str]]:
     """
     Lê a primeira planilha como lista de dicionários (tudo como string).
@@ -287,6 +355,29 @@ def read_excel_first_sheet(path: Path) -> List[Dict[str, str]]:
         row_norm["paragraph_number"] = i
         rows.append(row_norm)
     return rows
+
+
+def iter_preprocessed_excel_rows(path: Path) -> Iterator[Dict[str, Any]]:
+    """LÃª o cache NDJSON em streaming, uma linha por vez."""
+    with Path(path).open("r", encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if not line:
+                continue
+            data = json.loads(line)
+            if isinstance(data, dict):
+                yield data
+
+
+def iter_excel_rows(path: Path, preprocessed_path: Optional[Path] = None) -> Iterator[Dict[str, Any]]:
+    """Prefere o cache NDJSON; faz fallback para leitura direta do XLSX."""
+    cache_path = Path(preprocessed_path) if preprocessed_path is not None else get_preprocessed_excel_path(path)
+    if is_preprocessed_excel_fresh(path, cache_path):
+        logger.info("[lexical_search] usando cache NDJSON: %s", cache_path.name)
+        return iter_preprocessed_excel_rows(cache_path)
+
+    logger.info("[lexical_search] cache NDJSON ausente/desatualizado; fallback XLSX: %s", path.name)
+    return iter(read_excel_first_sheet(path))
 
 
 # =============================================================================================
@@ -618,6 +709,59 @@ def search_md_content(content: str, query: str) -> List[Dict[str, Any]]:
             processed = process_found_paragraph(paragraph, query)
             if processed and processed.strip():
                 results.append({"paragraph_text": processed, "paragraph_number": idx})
+        if len(results) >= MAX_OVERALL_SEARCH_RESULTS:
+            break
+
+    return results
+
+
+def search_excel_file(
+    path: Path,
+    query: str,
+    preprocessed_path: Optional[Path] = None,
+) -> List[Dict[str, Any]]:
+    """Executa a busca em um XLSX usando cache NDJSON quando disponÃ­vel."""
+    return search_excel_rows_streaming(
+        iter_excel_rows(path, preprocessed_path=preprocessed_path),
+        query,
+    )
+
+
+def search_excel_rows_streaming(rows: Iterable[Dict[str, Any]], query: str) -> List[Dict[str, Any]]:
+    """Varre linhas em streaming, sem materializar o arquivo inteiro em memÃ³ria."""
+    if not query:
+        return []
+
+    iterator = iter(rows)
+    first_row = next(iterator, None)
+    if not first_row:
+        return []
+
+    texto_key = resolve_excel_text_key(first_row)
+    if not texto_key:
+        return []
+
+    pred = compile_boolean_predicate(query)
+    pre = compile_prefilter(query)
+
+    results: List[Dict[str, Any]] = []
+
+    for row in chain([first_row], iterator):
+        paragraph = str(row.get(texto_key, ""))
+        pnorm = str(row.get("__match_text_norm", "")) or normalize_excel_match_text(paragraph)
+
+        if pre is not None and not pre(pnorm):
+            continue
+
+        if pred(pnorm):
+            processed = process_found_paragraph(paragraph, query)
+            if processed and processed.strip():
+                number = row.get("paragraph_number")
+                results.append({
+                    "paragraph_text": processed,
+                    "paragraph_number": int(number) if str(number).isdigit() else None,
+                    "metadata": sanitize_excel_metadata_row(row),
+                })
         if len(results) >= MAX_OVERALL_SEARCH_RESULTS:
             break
 

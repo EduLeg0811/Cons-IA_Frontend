@@ -442,7 +442,7 @@ def flatten_data(
         try:
             data = json.loads(data)
         except Exception as e:
-            logger.error(f"process_deepdive_teste: data inválido ({e})")
+            logger.error(f"process_deepdive_teste: invalid data ({e})")
             return []
 
     lista = []
@@ -459,7 +459,7 @@ def flatten_data(
                     else:
                         lista.append({"value": item, "field": field})
             else:
-                logger.debug(f"process_deepdive_teste --- {field} não é lista ({type(data[field])})")
+                logger.debug(f"process_deepdive_teste --- {field} is not a list ({type(data[field])})")
 
     def normalize_string(val: str) -> str:
         s = str(val).lower()

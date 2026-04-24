@@ -461,6 +461,32 @@ function resolveChatIdKey(scope = 'default') {
   return CHAT_ID_STORAGE_KEYS[scope] || CHAT_ID_STORAGE_KEYS.default;
 }
 
+function resolveChatIdStorage() {
+  try {
+    if (window.sessionStorage) return window.sessionStorage;
+  } catch {}
+  try {
+    if (window.localStorage) return window.localStorage;
+  } catch {}
+  return null;
+}
+
+function readLegacyChatId(key) {
+  try {
+    return window.localStorage ? window.localStorage.getItem(key) : null;
+  } catch {}
+  return null;
+}
+
+function migrateLegacyChatId(key, storage) {
+  if (!storage || storage === window.localStorage) return null;
+  const legacyId = readLegacyChatId(key);
+  if (!legacyId) return null;
+  try { storage.setItem(key, legacyId); } catch {}
+  try { window.localStorage.removeItem(key); } catch {}
+  return legacyId;
+}
+
 function createUuid() {
   if (window.crypto?.randomUUID) return window.crypto.randomUUID();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -472,10 +498,19 @@ function createUuid() {
 
 function getOrCreateChatId(scope = 'default') {
   const key = resolveChatIdKey(scope);
-  let id = localStorage.getItem(key);
+  const storage = resolveChatIdStorage();
+  if (!storage) return createUuid();
+
+  let id = null;
+  try {
+    id = storage.getItem(key);
+  } catch {}
+  if (!id) {
+    id = migrateLegacyChatId(key, storage);
+  }
   if (!id) {
     id = createUuid();
-    localStorage.setItem(key, id);
+    try { storage.setItem(key, id); } catch {}
   }
   return id;
 }
@@ -483,13 +518,15 @@ function getOrCreateChatId(scope = 'default') {
 function newConversationId(scope = 'default') {
   const id = createUuid();
   const key = resolveChatIdKey(scope);
-  localStorage.setItem(key, id);
+  const storage = resolveChatIdStorage();
+  try { storage?.setItem(key, id); } catch {}
   return id;
 }
 
 function setChatId(id, scope = 'default') {
   const key = resolveChatIdKey(scope);
-  localStorage.setItem(key, id);
+  const storage = resolveChatIdStorage();
+  try { storage?.setItem(key, id); } catch {}
   return id;
 }
 window.setChatId = setChatId;
@@ -554,6 +591,37 @@ async function resetConversation(scope = 'default') {
 }
 
 document.getElementById('btn-new-conv')?.addEventListener('click', () => resetConversation('ragbot'));
+
+// Quando a aba sai do ConsBOT e entra em outro módulo/página, limpa a sessão
+// anterior no backend para não manter contexto abandonado até o TTL expirar.
+(function cleanupRagbotSessionOutsideRagbotPage() {
+  const path = String(window.location?.pathname || '').toLowerCase();
+  const bodyLabel = String(document.body?.dataset?.pageLabel || '').toLowerCase();
+  const isRagbotPage = path.endsWith('/index_ragbot.html') || path.endsWith('index_ragbot.html') || bodyLabel === 'consbot';
+  if (isRagbotPage) return;
+
+  const key = resolveChatIdKey('ragbot');
+  const storage = resolveChatIdStorage();
+  const chat_id = (() => {
+    try {
+      return storage?.getItem(key) || null;
+    } catch {}
+    return null;
+  })();
+
+  if (!chat_id) return;
+
+  try {
+    fetch(apiBaseUrl + '/ragbot_reset', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id }),
+      keepalive: true
+    }).catch(() => {});
+  } catch {}
+
+  newConversationId('ragbot');
+})();
 
 // ---------------- Theme (Light/Dark) ----------------
 // Centralized theme handling to keep all pages consistent

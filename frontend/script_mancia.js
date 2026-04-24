@@ -99,11 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
             llm_max_results: Number(window.CONFIG?.LLM_MAX_RESULTS ?? LLM_MAX_RESULTS ?? 3),
             max_output_tokens: Number(window.CONFIG?.MAX_OUTPUT_TOKENS ?? MAX_OUTPUT_TOKENS ?? 500),
             vector_store_names: (window.CONFIG?.OPENAI_RAGBOT ?? OPENAI_RAGBOT),
-            instructions: COMMENTARY_INSTRUCTIONS               
+            instructions: COMMENTARY_INSTRUCTIONS,
+            use_session: false,
         };
 
          const commentaryData = await call_llm(paramRAGbot);
-        if (commentaryData.chat_id) localStorage.setItem('cons_chat_id', commentaryData.chat_id); 
         
         //***************************************************************************************** 
        

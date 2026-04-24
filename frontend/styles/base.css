@@ -1,7 +1,7 @@
 /* ==========================================================================
-   🎨 BASE / TOKENS, RESET E TIPOGRAFIA
+   ðŸŽ¨ BASE / TOKENS, RESET E TIPOGRAFIA
    --------------------------------------------------------------------------
-   Definições globais: variáveis (:root), reset universal, tipografia padrão e cores de fundo/primeiro plano. Estas regras são a base visual do projeto e são reutilizadas por todos os módulos.
+   DefiniÃ§Ãµes globais: variÃ¡veis (:root), reset universal, tipografia padrÃ£o e cores de fundo/primeiro plano. Estas regras sÃ£o a base visual do projeto e sÃ£o reutilizadas por todos os mÃ³dulos.
    ========================================================================== */
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
@@ -183,13 +183,13 @@ body:not([class]) .navbar-container .config-toggle {
 
 /* Subtle fade-in/fade-out for the info-toggle icon on homepage */
 @keyframes infoPulse {
-    /* início levemente visível e um pouco menor */
+    /* inÃ­cio levemente visÃ­vel e um pouco menor */
     0% {
         opacity: 0.2;
         transform: scale(0.985);
     }
 
-    /* sobe de forma contínua até o pico */
+    /* sobe de forma contÃ­nua atÃ© o pico */
     25% {
         opacity: 0.5;
         transform: scale(0.992);
@@ -200,7 +200,7 @@ body:not([class]) .navbar-container .config-toggle {
         transform: scale(1.0);
     }
 
-    /* desce de forma contínua de volta */
+    /* desce de forma contÃ­nua de volta */
     75% {
         opacity: 0.5;
         transform: scale(0.992);
@@ -236,14 +236,14 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle .navbar-logo {
 
 
 
-/* Dark mode toggle: apenas o ícone, sem “pílula” de fundo */
+/* Dark mode toggle: apenas o Ã­cone, sem â€œpÃ­lulaâ€ de fundo */
 .navbar-control-btn.theme-toggle {
     background: transparent;
     border: none;
     box-shadow: none;
 }
 
-/* Garantir que no hover não volte fundo */
+/* Garantir que no hover nÃ£o volte fundo */
 .navbar-control-btn.theme-toggle:hover,
 .navbar-control-btn.theme-toggle:focus-visible {
     background: transparent;
@@ -280,7 +280,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle .navbar-logo {
     margin: 0 auto;
 }
 
-/* Espacos entre o containers maiores da p�gina principal */
+/*/* Espacos entre os containers maiores da pagina principal */
 /* ====================================================== */
 .tools-grid {
     display: grid;
@@ -288,7 +288,7 @@ html[data-info-pulse="off"] .navbar-control-btn.info-toggle .navbar-logo {
     gap: var(--space-8);
 }
 
-/* Espacos entre os containers da p�gina principal */
+/*/* Espacos entre os containers da pagina principal */
 /* ====================================================== */
 .tools-list {
     display: grid;
@@ -452,9 +452,9 @@ html[data-config-pulse="off"] .options-trigger.pulsing { animation: none; }
 .book-checkboxes {
     display: flex;                 /* define como flex container */
     flex-direction: column;        /* organiza os itens em coluna (um abaixo do outro) */
-    gap: 8px;                      /* espa�o vertical entre os pills */
-    width: 100%;                   /* ocupa toda a largura disponível do container pai */
-    /* max-width: 200px; limita a largura m�xima da coluna (pode remover se quiser flexível) */
+    gap: 8px;                      /* espaco vertical entre os pills */
+    width: 100%;                   /* ocupa toda a largura disponÃ­vel do container pai */
+    /* max-width: 200px; limita a largura maxima da coluna (pode remover se quiser flexivel) */
     margin: 0 auto;                /* centraliza horizontalmente a coluna na tela */
 }
 
@@ -471,7 +471,7 @@ body.dark .book-pill:hover {
 }
 
 body.dark .book-pill.active {
-    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do m�dulo */
+    background: var(--module-accent, var(--primary-500));           /* ativa/selecionada usa cor do modulo */
     color: var(--module-accent-contrast, #fff);                     /* texto com contraste */
 }
 
@@ -513,7 +513,7 @@ body.dark .book-pill.active {
     line-height: 1.4;
 }
 
-/* ==== ConsBOT: aproximar “Sugestões de perguntas” da caixa de pesquisa ==== */
+/* ==== ConsBOT: aproximar â€œSugestÃµes de perguntasâ€ da caixa de pesquisa ==== */
 .theme-bots .search-row {
     margin-bottom: var(--space-2); /* antes: var(--space-6) */
   }
@@ -591,7 +591,7 @@ body.dark .book-pill.active {
     margin-top: var(--space-3);
 }
 
-/* Same separators for Sem�ntica group */
+/* Same separators for Semantica group */
 .theme-sem .group-content .displaybox-item {
     border-top: 1px solid var(--gray-200);
     padding-top: var(--space-3);
@@ -719,7 +719,7 @@ html[data-module-config-open="true"] .search-button {
     height: 24px;
     display: inline-block;   /* antes estava block */
     vertical-align: top;  /* opcional: alinha com o texto */
-    margin-right: 4px;   /* aumenta o espaço antes do badge */
+    margin-right: 4px;   /* aumenta o espaÃ§o antes do badge */
 }
 
 /* Small icon STAR */
@@ -728,7 +728,7 @@ html[data-module-config-open="true"] .search-button {
     height: 24px;
     display: inline-block;   /* antes estava block */
     vertical-align: top;  /* opcional: alinha com o texto */
-    margin-right: 0px;   /* aumenta o espaço antes do badge */
+    margin-right: 0px;   /* aumenta o espaÃ§o antes do badge */
 }
 
 /* Action hints under primary buttons */
@@ -754,11 +754,11 @@ html[data-module-config-open="true"] .search-button {
 
 /* /* /* Ajuste tamanho letra e espacamento das linhas nos paragrafos renderizados via Markdown */
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-/* Uniformizar listas e parágrafos */
+/* Uniformizar listas e parÃ¡grafos */
 .markdown-content ul,
 .markdown-content ol {
     margin: 0;
-    padding-left: 1.2em; /* mantém leve recuo */
+    padding-left: 1.2em; /* mantÃ©m leve recuo */
     line-height: 1.4;    /* igual ao <p> */
     font-size: var(--text-sm); /* igual ao <p> */
 }
@@ -858,7 +858,7 @@ html[data-module-config-open="true"] .search-button {
     }
     
     /* Removido bloco duplicado de .panel-header (mantido o bloco mais completo abaixo e mescladas as propriedades de tipografia)
-       Motivo: havia duas definições consecutivas para .panel-header dentro do mesmo @media. Mantemos uma única regra consolidada. */
+       Motivo: havia duas definiÃ§Ãµes consecutivas para .panel-header dentro do mesmo @media. Mantemos uma Ãºnica regra consolidada. */
 
 
 
@@ -916,7 +916,7 @@ html[data-module-config-open="true"] .search-button {
         width: 100%;
         margin: 0;          /* zera margens */
         padding: 0;         /* zera padding */
-        text-align: left;   /* mantém alinhado à esquerda */
+        text-align: left;   /* mantÃ©m alinhado Ã  esquerda */
         font-size: var(--text-xs);
         line-height: 1;
         color: var(--gray-600);   
@@ -1074,14 +1074,14 @@ html[data-module-config-open="true"] .search-button {
   color: var(--gray-800) !important;
 }
 
-/* Coluna única */
+/* Coluna Ãºnica */
 /*==============================================================================*/
 .option-column {
     display: flex;
     flex-direction: column;
     gap: 16px;
     width: 100%;
-    max-width: none; /* largura m�xima agrad�vel */
+    max-width: none; /* largura maxima agradavel */
   }
 
 /* ===== HOMEPAGE INFO TOGGLE (expand descriptions) ===== */
@@ -1118,15 +1118,15 @@ width: 36px;
 height: 20px;
 }
 
-/* Linha dos botões */
+/* Linha dos botÃµes */
 .button-row {
     display: flex;
     justify-content: center;
-    gap: 12px; /* espaço entre os botões */
+    gap: 12px; /* espaÃ§o entre os botÃµes */
     margin-top: 12px;
   }
 
-/* Botão salvar */
+/* BotÃ£o salvar */
   .save-btn {
 width: 40px;
 height: 40px;
@@ -1211,7 +1211,7 @@ select {
     margin: 6px;
   }
 
-/* Título */
+/* TÃ­tulo */
   .initial-quests-title {
     font-size: var(--text-base);
     color: var(--gray-600);
@@ -1256,9 +1256,9 @@ select {
 .summary-list-deepdive {
     display: flex;
     flex-direction: column;
-    gap: 2px;           /* espa�amento m�nimo entre os pills */
+    gap: 2px;           /* espacamento minimo entre os pills */
     max-width: 400px;
-    width: 100%; /* pills expandem at� a borda do container */
+    width: 100%; /* pills expandem ate a borda do container */
     padding: 4px;
   }
 
@@ -1299,10 +1299,10 @@ select {
 .hl { background: #fff59d; padding: 0 1px; border-radius: 2px; }
 
 /* ===============================
-   Ajuste tipografia parágrafos módulos — Mobile 480px
+   Ajuste tipografia parÃ¡grafos mÃ³dulos â€” Mobile 480px
    =============================== */
    @media (max-width: 480px) {
-    /* Parágrafos renderizados nos resultados de busca */
+    /* ParÃ¡grafos renderizados nos resultados de busca */
     .displaybox-text .markdown-content p,
     .displaybox-text .markdown-content li,
     .displaybox-text .markdown-content ul,
@@ -1311,7 +1311,7 @@ select {
       line-height: 1.2;
     }
   
-    /* Títulos dentro dos resultados também um pouco menores */
+    /* TÃ­tulos dentro dos resultados tambÃ©m um pouco menores */
     .displaybox-text .markdown-content h1,
     .displaybox-text .markdown-content h2,
     .displaybox-text .markdown-content h3 {
@@ -1324,7 +1324,7 @@ select {
 .markdown-content table {
     width: 100%;
     border-collapse: collapse;
-    margin: 0.8em 0;             /* similar aos parágrafos */
+    margin: 0.8em 0;             /* similar aos parÃ¡grafos */
     font-size: var(--text-sm);   /* igual ao texto comum */
     line-height: 1.4;
   }

@@ -412,7 +412,7 @@ if (VERSION_DEVELOPMENT) {
         if (explicit) return explicit;
         const title = trim(document.title);
         if (!title) return '';
-        return title.split(/●|â—/)[0].trim() || title;
+        return title.split(/●/)[0].trim() || title;
       } catch {
         return '';
       }

@@ -1,7 +1,7 @@
 /* ==========================================================================
-   🌙 MODO ESCURO / OVERRIDES
+   ðŸŒ™ MODO ESCURO / OVERRIDES
    --------------------------------------------------------------------------
-   Regras aplicadas quando o atributo [data-theme="dark"] está presente no <html>. Ajusta cores, sombras e contrastes para baixa luminosidade mantendo legibilidade.
+   Regras aplicadas quando o atributo [data-theme="dark"] estÃ¡ presente no <html>. Ajusta cores, sombras e contrastes para baixa luminosidade mantendo legibilidade.
    ========================================================================== */
 
 /* ===== DARK MODE TOKENS ===== */
@@ -64,6 +64,88 @@
 
 [data-theme="dark"] .tool-panel:hover {
     box-shadow: 0 36px 85px -30px rgba(2, 6, 23, 0.9);
+}
+
+[data-theme="dark"] .featured-highlights {
+    border-color: rgba(148, 163, 184, 0.18);
+    background:
+        radial-gradient(circle at top left, rgba(168, 85, 247, 0.16), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.14), transparent 28%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(17, 24, 39, 0.96) 100%);
+    box-shadow:
+        0 26px 60px -28px rgba(2, 6, 23, 0.78),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .featured-highlights__eyebrow,
+[data-theme="dark"] .featured-card__pill {
+    background: rgba(168, 85, 247, 0.18);
+    color: #ddd6fe;
+}
+
+[data-theme="dark"] .featured-highlights__title,
+[data-theme="dark"] .featured-card__copy h3 {
+    color: var(--gray-900);
+}
+
+[data-theme="dark"] .featured-highlights__subtitle,
+[data-theme="dark"] .featured-card__copy p {
+    color: rgba(226, 232, 240, 0.78);
+}
+
+[data-theme="dark"] .featured-card {
+    border-color: rgba(148, 163, 184, 0.18);
+    background:
+        linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(30, 41, 59, 0.86) 100%);
+    box-shadow: 0 24px 48px -30px rgba(2, 6, 23, 0.82);
+}
+
+[data-theme="dark"] .featured-card--intro {
+    background:
+        radial-gradient(circle at top left, rgba(168, 85, 247, 0.14), transparent 34%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(31, 41, 55, 0.92) 100%);
+}
+
+[data-theme="dark"] .featured-card--mancia {
+    background:
+        radial-gradient(circle at top right, rgba(168, 85, 247, 0.16), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 100%);
+}
+
+[data-theme="dark"] .featured-card:hover {
+    border-color: rgba(167, 139, 250, 0.34);
+    box-shadow: 0 28px 58px -30px rgba(59, 130, 246, 0.4);
+}
+
+[data-theme="dark"] .featured-card--intro:hover {
+    border-color: rgba(148, 163, 184, 0.18);
+    box-shadow: 0 24px 48px -30px rgba(2, 6, 23, 0.82);
+}
+
+[data-theme="dark"] .featured-card__pill--soft {
+    background: rgba(14, 165, 233, 0.18);
+    color: #bae6fd;
+}
+
+[data-theme="dark"] .featured-card__pill--muted {
+    background: rgba(148, 163, 184, 0.16);
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .featured-card__footer {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .featured-card__cta {
+    background: rgba(30, 41, 59, 0.84);
+    border-color: rgba(148, 163, 184, 0.2);
+    box-shadow: none;
+}
+
+[data-theme="dark"] .featured-card__cta--disabled {
+    background: rgba(51, 65, 85, 0.72);
+    color: #cbd5e1;
 }
 
 [data-theme="dark"] .tool-card {
@@ -159,16 +241,16 @@
 
 [data-theme="dark"] .btn { background: #1f2937; color:#e5e7eb; border-color:#374151; }
 
-/* ===== DARK MODE — RAGBOT CHAT ===== */
+/* ===== DARK MODE â€” RAGBOT CHAT ===== */
 
-/* Balão principal da resposta do RagBOT: cartão levemente destacado sobre o fundo */
+/* BalÃ£o principal da resposta do RagBOT: cartÃ£o levemente destacado sobre o fundo */
 [data-theme="dark"] .theme-bots .chat-message.bot .message-content {
-    background: rgba(15, 23, 42, 0.95);        /* superfície quase sólida */
+    background: rgba(15, 23, 42, 0.95);        /* superfÃ­cie quase sÃ³lida */
     border-radius: var(--radius-xl);
     border: 1px solid rgba(148, 163, 184, 0.35);
 }
 
-/* Texto markdown no RagBOT em dark: mantém tipografia clara e confortável */
+/* Texto markdown no RagBOT em dark: mantÃ©m tipografia clara e confortÃ¡vel */
 [data-theme="dark"] .theme-bots .chat-message.bot .message-content .markdown-content {
     color: var(--gray-800);
 }
@@ -184,12 +266,12 @@
 
 /* Badges de modo RagBOT (Waldo / English / etc.) no dark: fundo suave e texto claro */
 [data-theme="dark"] .theme-bots .ragbot-mode-badge {
-    background-color: rgba(16, 185, 129, 0.22);   /* verde suave translúcido */
+    background-color: rgba(16, 185, 129, 0.22);   /* verde suave translÃºcido */
     color: var(--gray-900);                       /* texto claro */
     border: 1px solid rgba(45, 212, 191, 0.55);
 }
 
-/* Sugestões iniciais (initial-quests) em modo escuro — desktops */
+/* SugestÃµes iniciais (initial-quests) em modo escuro â€” desktops */
 [data-theme="dark"] .initial-quests-badge {
     background: #1f2937;
     color: var(--gray-800);
@@ -203,8 +285,8 @@
     color: var(--gray-900);
 }
 
-/* Removido bloco menos completo de [data-theme="dark"] .save-btn.saving (mantida versão mais completa abaixo com !important e box-shadow)
-   Motivo: evitar sobreposição desnecessária mantendo a regra consolidada. */
+/* Removido bloco menos completo de [data-theme="dark"] .save-btn.saving (mantida versÃ£o mais completa abaixo com !important e box-shadow)
+   Motivo: evitar sobreposiÃ§Ã£o desnecessÃ¡ria mantendo a regra consolidada. */
 
 /* Tema escuro */
   [data-theme="dark"] .save-btn {
@@ -219,7 +301,7 @@
 
 /* removed unused dark theme exit button rules */
 
-/* Ajustes para smartphones até 480px */
+/* Ajustes para smartphones atÃ© 480px */
   @media (max-width: 480px) {
     #initial-quests {
       margin: 4px;
@@ -260,17 +342,17 @@
     [data-theme="dark"] .initial-quests-badge:hover,
     [data-theme="dark"] .initial-quests-badge:active,
     [data-theme="dark"] .initial-quests-badge:focus {
-        background: #3a4d40;   /* verde intermedi�rio no hover */
+        background: #3a4d40;   /* verde intermediario no hover */
         color: #ffffff;
     }
   
-    /* Tema Dark - título */
+    /* Tema Dark - titulo */
     [data-theme="dark"] .initial-quests-title {
         color: #b0b0b0;   /* cinza claro, suave */
     }
     
-    /* Removido bloco duplicado de [data-theme="dark"] .initial-quests-badge e seus estados (já definido acima)
-       Motivo: regras idênticas repetidas dentro do mesmo @media. */
+    /* Removido bloco duplicado de [data-theme="dark"] .initial-quests-badge e seus estados (jÃ¡ definido acima)
+       Motivo: regras idÃªnticas repetidas dentro do mesmo @media. */
   
 
         

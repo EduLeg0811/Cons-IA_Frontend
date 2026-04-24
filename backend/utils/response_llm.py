@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import time
+from collections import OrderedDict
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -27,13 +28,69 @@ from utils.config import (
 load_dotenv()
 logger = logging.getLogger(__name__)
 
-# MemÃƒÂ³ria simples por conversa (somente em memÃƒÂ³ria / por processo)
-_conversation_last_id = {}  # chat_id -> ÃƒÂºltimo response.id
+# Memória simples por conversa (somente em memória / por processo)
+_CONVERSATION_TTL_S = int(os.getenv("CONVERSATION_TTL_S", "21600"))  # 6h
+_CONVERSATION_MAX_ITEMS = int(os.getenv("CONVERSATION_MAX_ITEMS", "512"))
+_conversation_last_id = OrderedDict()  # chat_id -> (last_response_id, updated_at)
 
 
   
 
 logger = logging.getLogger(__name__)
+
+
+def _prune_conversation_memory(now: float | None = None):
+    if not _conversation_last_id:
+        return
+
+    now = now if now is not None else time.time()
+    expired_keys = [
+        chat_id
+        for chat_id, (_, updated_at) in _conversation_last_id.items()
+        if now - updated_at > _CONVERSATION_TTL_S
+    ]
+    for chat_id in expired_keys:
+        _conversation_last_id.pop(chat_id, None)
+
+    while len(_conversation_last_id) > _CONVERSATION_MAX_ITEMS:
+        _conversation_last_id.popitem(last=False)
+
+
+def _get_previous_response_id(chat_id: str | None):
+    if not chat_id:
+        return None
+
+    _prune_conversation_memory()
+    item = _conversation_last_id.get(chat_id)
+    if not item:
+        return None
+
+    last_response_id, updated_at = item
+    if time.time() - updated_at > _CONVERSATION_TTL_S:
+        _conversation_last_id.pop(chat_id, None)
+        return None
+
+    _conversation_last_id.move_to_end(chat_id)
+    return last_response_id
+
+
+def _remember_response_id(chat_id: str | None, response_id: str | None):
+    if not chat_id or not response_id:
+        return
+
+    now = time.time()
+    _conversation_last_id[chat_id] = (response_id, now)
+    _conversation_last_id.move_to_end(chat_id)
+    _prune_conversation_memory(now)
+
+
+def get_conversation_memory_stats() -> dict:
+    _prune_conversation_memory()
+    return {
+        "count": len(_conversation_last_id),
+        "ttl_s": _CONVERSATION_TTL_S,
+        "max_items": _CONVERSATION_MAX_ITEMS,
+    }
 
 
 def _get_attr(item, key, default=None):
@@ -56,9 +113,9 @@ def _strip_inline_citation_tokens(text: str) -> str:
     if not text:
         return ""
     cleaned = str(text)
-    # remove classic inline refs: ã€...ã€‘
+    # remove classic inline refs: bracketed citation tokens
     cleaned = re.sub(r"\u3010[^\u3011]*\u3011", "", cleaned)
-    # remove unresolved internal markers like: Ã®Ë†â‚¬fileciteÃ®Ë†â€šturn0...
+    # remove unresolved internal markers like: fileciteturn0...
     cleaned = re.sub(r"\S*filecite\S*", "", cleaned, flags=re.IGNORECASE)
     # remove common 'turnXfileY' leftovers
     cleaned = re.sub(r"\bturn\d+(?:file\d+)?\b", "", cleaned, flags=re.IGNORECASE)
@@ -109,7 +166,7 @@ def _collect_citations_map(response_main) -> dict:
                 if index not in (None, ""):
                     citations_map[clean_name].add(index)
 
-            # Legacy inline pattern fallback: ã€...ã€‘
+            # Legacy inline pattern fallback: bracketed citation tokens
             for match in re.findall(r"\u3010[^\u3011]+\u3011", text):
                 idx_match = re.search(r":(\d+)", match)
                 file_match = re.search(r"\u2020([^)]+)\)", match)
@@ -126,7 +183,7 @@ def _collect_citations_map(response_main) -> dict:
 
 
 # =============================================================================
-# FunÃƒÂ§ÃƒÂ£o principal para gerar resposta do LLM
+# Função principal para gerar resposta do LLM
 # =============================================================================
 def generate_llm_answer(
     query,
@@ -140,7 +197,7 @@ def generate_llm_answer(
     chat_id="default",
     timeout_s: int = 60,
     max_retries: int = 2,
-    # novos parÃƒÂ¢metros opcionais para GPT-5 / GPT-5.1 / GPT-5.2
+    # novos parametros opcionais para GPT-5 / GPT-5.1 / GPT-5.2
     reasoning_effort: str = "none",   # "none" | "minimal" | "low" | "medium" | "high"
     verbosity: str = "low",          # "low" | "medium" | "high"
 ):
@@ -150,7 +207,7 @@ def generate_llm_answer(
         return {"error": "Consulta vazia."}
 
     vector_store_ids = get_vector_store_ids(vector_store_names)
-    previous_id = _conversation_last_id.get(chat_id) if use_session else None
+    previous_id = _get_previous_response_id(chat_id) if use_session else None
 
     # -------------------------------------------------------------------------
     # Monta payload da Responses API
@@ -177,7 +234,7 @@ def generate_llm_answer(
             "max_output_tokens": int(max_output_tokens),
         }
 
-    # Branch para GPT-5 / GPT-5.1 (nÃƒÂ£o usar temperature, usar reasoning/text)
+    # Branch para GPT-5 / GPT-5.1 (não usar temperature, usar reasoning/text)
     elif model_str.startswith("gpt-5"):
         llm_str = {
             "model": model,
@@ -194,7 +251,7 @@ def generate_llm_answer(
             "max_output_tokens": int(max_output_tokens),
         }
 
-    # Branch para modelos "clÃƒÂ¡ssicos" (gpt-4.1, gpt-4o, etc.) Ã¢Å¾Å“ usam temperature
+    # Branch para modelos "clássicos" (gpt-4.1, gpt-4o, etc.) ➜ usam temperature
     else:
         llm_str = {
             "model": model,
@@ -229,10 +286,10 @@ def generate_llm_answer(
                     **llm_str
                 )
 
-                # Atualiza o ÃƒÂºltimo ID da conversa
+                # Atualiza o último ID da conversa
                 last_id = getattr(response, "id", None)
-                if last_id and use_session:
-                    _conversation_last_id[chat_id] = last_id
+                if use_session:
+                    _remember_response_id(chat_id, last_id)
 
                 # Formata para o frontend
                 formatted_response = format_llm_response(response)
@@ -247,7 +304,7 @@ def generate_llm_answer(
                 attempts += 1
 
             except Exception as ex:
-                # Erros inesperados: nÃƒÂ£o faz retry
+                # Erros inesperados: não faz retry
                 raise ex
 
     except Exception as e:
@@ -259,7 +316,7 @@ def generate_llm_answer(
 
 
 # =============================================================================
-# FunÃƒÂ§ÃƒÂ£o para obter IDs dos Vector Stores
+# Função para obter IDs dos Vector Stores
 # =============================================================================
 def get_vector_store_ids(vector_store_names):
 
@@ -289,7 +346,7 @@ def get_vector_store_ids(vector_store_names):
         return DEFAULT_VECTOR_STORE_OPENAI
 
     
-    # Achata um nÃƒÂ­vel de listas aninhadas: [[id1], [id2]] -> [id1, id2]
+    # Achata um nível de listas aninhadas: [[id1], [id2]] -> [id1, id2]
     if isinstance(vector_store_names, (list, tuple)):
         flat = []
         for x in vector_store_names:
@@ -409,15 +466,14 @@ def clean_text(text):
 
 
 # ____________________________________________________________________________
-# Reset da memÃƒÂ³ria de uma conversa especÃƒÂ­fica
+# Reset da memória de uma conversa específica
 # ____________________________________________________________________________
 def reset_conversation_memory(chat_id: str):
-    """Remove o ÃƒÂºltimo response.id associado a um chat_id."""
+    """Remove o último response.id associado a um chat_id."""
     try:
         _conversation_last_id.pop(chat_id, None)
-        logger.info(f"MemÃƒÂ³ria da conversa resetada: chat_id={chat_id}")
+        logger.info(f"Conversation memory reset: chat_id={chat_id}")
     except Exception as e:
-        logger.error(f"Erro ao resetar memÃƒÂ³ria para chat_id={chat_id}: {e}")
+        logger.error(f"Failed to reset conversation memory for chat_id={chat_id}: {e}")
 
 #como usar no frontend
-

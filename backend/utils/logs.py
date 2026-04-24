@@ -29,6 +29,14 @@ _geoip_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
 _geoip_ttl_seconds = 3600
 
 
+def get_geoip_cache_stats() -> Dict[str, Any]:
+    with _geoip_cache_lock:
+        return {
+            "count": len(_geoip_cache),
+            "ttl_s": _geoip_ttl_seconds,
+        }
+
+
 def _ensure_dir(path: str) -> None:
     if not path:
         return

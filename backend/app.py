@@ -9,6 +9,7 @@ API Response Structures
 
 # Import required libraries
 from io import BytesIO
+import gc
 import logging
 import os
 from pathlib import Path
@@ -25,9 +26,11 @@ import urllib.error
 import time
 
 from flask import Flask, Response, jsonify, request, send_file, send_from_directory
+from flask import g
 from flask_cors import CORS
 from flask_restful import Api, Resource
 from functools import wraps
+import psutil
 
 from modules.lexical_search.lexical_utils import lexical_search_in_files
 from modules.mancia.mancia_utils import get_random_paragraph
@@ -49,8 +52,13 @@ from utils.logs import (
     summarize_records,
     clear_today,
     clear_all,
+    get_geoip_cache_stats,
 )
-from utils.response_llm import generate_llm_answer, reset_conversation_memory
+from utils.response_llm import (
+    generate_llm_answer,
+    reset_conversation_memory,
+    get_conversation_memory_stats,
+)
 
 # Add backend directory to Python path
 BACKEND_DIR = Path(__file__).parent.resolve()
@@ -80,6 +88,62 @@ IP_DAILY_ACCESS_LOCK = threading.Lock()
 FORCE_MODEL_THRESHOLD = 8
 BLOCK_THRESHOLD = 20
 FORCED_MODEL = "gpt-4.1-mini"
+MEMORY_TRACE_ENABLED = os.getenv("MEMORY_TRACE_ENABLED", "1") == "1"
+MEMORY_TRACE_HEADERS = os.getenv("MEMORY_TRACE_HEADERS", "0") == "1"
+MEMORY_TRACE_ONLY_API = os.getenv("MEMORY_TRACE_ONLY_API", "1") == "1"
+MEMORY_TRACE_THRESHOLD_MB = float(os.getenv("MEMORY_TRACE_THRESHOLD_MB", "0") or 0)
+PROCESS = psutil.Process(os.getpid())
+
+
+def prune_daily_access(today: str) -> None:
+    stale_ips = [
+        ip
+        for ip, entry in IP_DAILY_ACCESS.items()
+        if not isinstance(entry, dict) or entry.get("date") != today
+    ]
+    for ip in stale_ips:
+        IP_DAILY_ACCESS.pop(ip, None)
+
+
+def _should_trace_request() -> bool:
+    if not MEMORY_TRACE_ENABLED:
+        return False
+    if not MEMORY_TRACE_ONLY_API:
+        return True
+    path = request.path or ""
+    return (
+        path.startswith("/llm_query")
+        or path.startswith("/lexical_search")
+        or path.startswith("/random_pensata")
+        or path.startswith("/biblio_wv/")
+        or path.startswith("/api/apps/insert-ref-verbete")
+        or path.startswith("/download")
+        or path.startswith("/ragbot_reset")
+        or path.startswith("/health")
+    )
+
+
+def _get_rss_mb() -> float:
+    try:
+        return round(PROCESS.memory_info().rss / (1024 * 1024), 1)
+    except Exception:
+        return -1.0
+
+
+def _build_runtime_snapshot() -> Dict[str, Any]:
+    try:
+        gc_counts = gc.get_count()
+        gc_info = {"gen0": gc_counts[0], "gen1": gc_counts[1], "gen2": gc_counts[2]}
+    except Exception:
+        gc_info = {}
+
+    return {
+        "rss_mb": _get_rss_mb(),
+        "ip_daily_access_count": len(IP_DAILY_ACCESS),
+        "conversation_memory": get_conversation_memory_stats(),
+        "geoip_cache": get_geoip_cache_stats(),
+        "gc": gc_info,
+    }
 
 def extract_client_ip(headers, remote_addr):
     """Extrai o IP real do cliente usando a mesma lógica do sistema de logs"""
@@ -162,6 +226,52 @@ logger.info(
     CORS_ALLOWED_ORIGINS,
     FILES_SEARCH_DIR,
 )
+
+
+@app.before_request
+def begin_request_memory_trace():
+    if not _should_trace_request():
+        return
+    g.request_trace_started_at = time.perf_counter()
+    g.request_trace_rss_before = _get_rss_mb()
+
+
+@app.after_request
+def end_request_memory_trace(response):
+    if not _should_trace_request():
+        return response
+
+    started_at = getattr(g, "request_trace_started_at", None)
+    rss_before = getattr(g, "request_trace_rss_before", None)
+    rss_after = _get_rss_mb()
+    duration_ms = round((time.perf_counter() - started_at) * 1000, 1) if started_at else None
+    delta_mb = round(rss_after - rss_before, 1) if rss_before is not None and rss_after >= 0 else None
+    runtime = _build_runtime_snapshot()
+
+    if delta_mb is None or abs(delta_mb) >= MEMORY_TRACE_THRESHOLD_MB:
+        logger.info(
+            "MEMTRACE path=%s method=%s status=%s dur_ms=%s rss_before_mb=%s rss_after_mb=%s rss_delta_mb=%s conv_count=%s ip_count=%s geoip_count=%s gc=%s",
+            request.path,
+            request.method,
+            response.status_code,
+            duration_ms,
+            rss_before,
+            rss_after,
+            delta_mb,
+            runtime["conversation_memory"]["count"],
+            runtime["ip_daily_access_count"],
+            runtime["geoip_cache"]["count"],
+            runtime["gc"],
+        )
+
+    if MEMORY_TRACE_HEADERS:
+        response.headers["X-Process-RSS-MB"] = str(rss_after)
+        if delta_mb is not None:
+            response.headers["X-Process-RSS-Delta-MB"] = str(delta_mb)
+        if duration_ms is not None:
+            response.headers["X-Request-Duration-MS"] = str(duration_ms)
+
+    return response
 
 
 # ______________________________________________________________________
@@ -248,6 +358,7 @@ class LlmQueryResource(Resource):
             limit_status = "normal"
 
             with IP_DAILY_ACCESS_LOCK:
+                prune_daily_access(today)
                 ip_entry = IP_DAILY_ACCESS.get(client_ip)
                 if not ip_entry or ip_entry.get("date") != today:
                     ip_entry = {"date": today, "count": 0}
@@ -284,9 +395,8 @@ class LlmQueryResource(Resource):
             )
 
             # >>> NOVO: chat_id por conversa/aba (vem do body, header, ou é criado)
-            chat_id = safe_str(data.get("chat_id", "")) \
-                       or safe_str(request.headers.get("X-Chat-Id", "")) \
-                       or str(uuid.uuid4())
+            requested_chat_id = safe_str(data.get("chat_id", "")) or safe_str(request.headers.get("X-Chat-Id", ""))
+            chat_id = requested_chat_id or (str(uuid.uuid4()) if use_session else "")
 
             parameters = {
                 "query": query,
@@ -639,7 +749,11 @@ def clear_logs_all():
 
 @app.route('/health')
 def health_check():
-    return jsonify({'status': 'ok', 'message': 'Server is running'})
+    payload = {'status': 'ok', 'message': 'Server is running'}
+    details = safe_str(request.args.get("details", ""))
+    if details in {"1", "true", "yes", "full"}:
+        payload["runtime"] = _build_runtime_snapshot()
+    return jsonify(payload)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
