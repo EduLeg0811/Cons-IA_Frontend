@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embed Bibliomancia</title>
+  <style>
+    :root {
+      --bg: linear-gradient(180deg, #f3fbf8 0%, #eef6ff 100%);
+      --surface: rgba(255, 255, 255, 0.92);
+      --surface-strong: #ffffff;
+      --border: rgba(15, 23, 42, 0.10);
+      --text: #17324a;
+      --muted: #5e7488;
+      --accent: #0f9f78;
+      --accent-strong: #0b7a5d;
+      --accent-soft: #ddf7ee;
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.10);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Georgia, "Times New Roman", serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero {
+      padding: 18px 20px 12px;
+      background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.18), transparent 34%),
+        linear-gradient(135deg, rgba(226, 248, 240, 0.95), rgba(240, 247, 255, 0.9));
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      color: var(--accent-strong);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 10px 0 6px;
+      font-size: clamp(24px, 3.4vw, 34px);
+      line-height: 1.05;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 58ch;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .panel {
+      padding: 12px 16px 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .composer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .context {
+      min-height: 64px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 10px 12px;
+      background: var(--surface-strong);
+      color: var(--muted);
+      line-height: 1.4;
+      font-size: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 16px;
+      min-width: 180px;
+      font: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      cursor: pointer;
+      transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 14px 30px rgba(11, 122, 93, 0.22);
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+    }
+
+    .answer {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px 14px;
+      min-height: 120px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .answer.is-empty {
+      color: var(--muted);
+    }
+
+    .footnote {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 720px) {
+      .wrap {
+        padding: 14px;
+      }
+
+      .hero,
+      .panel {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .composer {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="widget" aria-label="Bibliomancia">
+      <header class="hero">
+        <div class="eyebrow">Bibliomancia Embed</div>
+        <h1 id="title">Bibliomancia</h1>
+        <p class="subtitle" id="subtitle">Sorteie uma ortopensata do Léxico de Ortopensatas e receba um comentário breve para reflexão.</p>
+      </header>
+
+      <div class="panel">
+        <div class="toolbar">
+          <div class="status" id="status">Pronto para sortear.</div>
+        </div>
+
+        <div class="composer">
+          <div class="context" id="contextBox">Clique em "Sortear pensata" para gerar uma ortopensata e o comentário associado.</div>
+          <button id="drawButton" type="button">Sortear pensata</button>
+        </div>
+
+        <div class="answer is-empty" id="answerBox">A pensata e o comentário aparecerão aqui.</div>
+        <div class="footnote" id="footnote">Parâmetros opcionais na URL: <code>?api=https://seu-backend</code>, <code>&title=Seu%20Título</code>, <code>&subtitle=Seu%20Subtítulo</code>.</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const COMMENTARY_INSTRUCTIONS = [
+      'Você é um assistente especialista em Conscienciologia, focado em responder perguntas sobre o livro Léxico de Ortopensatas, de autoria de Waldo Vieira, utilizando documentos de referência quando necessário.',
+      'Analise o significado do parágrafo ("Pensata") sob o paradigma conscienciológico.',
+      'Comente de maneira objetiva, utilizando neologismos e a abordagem específica da Conscienciologia.',
+      'Limite a resposta a apenas 1 parágrafo breve e objetivo.',
+      'Não repita nem transcreva a Pensata; inicie diretamente com a explicação seca.',
+      'Não cite nem referencie fontes.',
+      'Use Markdown limpo.',
+      '**Comentário:** (1 frase breve e objetiva)',
+      '',
+      '**Autoquestionamento:**',
+      'Breve pergunta para promover reflexão sobre a aplicação pessoal da Pensata visando à evolução consciencial.'
+    ].join('\n');
+
+    const params = new URLSearchParams(window.location.search);
+    const apiBase = (params.get('api') || 'https://cons-ai-server.onrender.com').replace(/\/+$/, '');
+    const title = params.get('title') || 'Bibliomancia';
+    const subtitle = params.get('subtitle') || 'Sorteie uma ortopensata do Léxico de Ortopensatas e receba um comentário breve para reflexão.';
+
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
+    const statusEl = document.getElementById('status');
+    const contextBoxEl = document.getElementById('contextBox');
+    const drawButtonEl = document.getElementById('drawButton');
+    const answerBoxEl = document.getElementById('answerBox');
+    const footnoteEl = document.getElementById('footnote');
+
+    let currentController = null;
+
+    titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
+
+    function setStatus(text) {
+      statusEl.textContent = text;
+    }
+
+    function setContext(text) {
+      contextBoxEl.textContent = text;
+    }
+
+    function setCompactResultsMode(enabled) {
+      contextBoxEl.style.display = enabled ? 'none' : '';
+      footnoteEl.style.display = enabled ? 'none' : '';
+    }
+
+    function setAnswer(text, isError) {
+      answerBoxEl.classList.remove('is-empty');
+      answerBoxEl.textContent = text;
+      answerBoxEl.style.color = isError ? '#a11d33' : '';
+    }
+
+    function resetAnswerStyle() {
+      answerBoxEl.style.color = '';
+    }
+
+    async function postJson(path, payload, signal) {
+      const response = await fetch(`${apiBase}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+      return data;
+    }
+
+    function formatPensata(pensataData, commentaryText) {
+      const page = String(pensataData?.pagina || '').trim();
+      const reference = page ? `Léxico de Ortopensatas, 2019, pág. ${page}` : 'Léxico de Ortopensatas, 2019';
+      const pensataText = pensataData?.text || 'Pensata não retornada.';
+
+      return [
+        'Pensata sorteada',
+        '',
+        pensataText,
+        '',
+        reference,
+        '',
+        'Comentário',
+        '',
+        commentaryText || 'Sem comentário retornado.'
+      ].join('\n');
+    }
+
+    async function drawPensata() {
+      if (drawButtonEl.disabled) {
+        return;
+      }
+
+      if (currentController) {
+        currentController.abort();
+      }
+
+      currentController = new AbortController();
+      const timeoutId = setTimeout(() => currentController.abort(), 45000);
+
+      drawButtonEl.disabled = true;
+      resetAnswerStyle();
+      setCompactResultsMode(false);
+      setStatus('Sorteando pensata...');
+      setContext('Consultando o Léxico de Ortopensatas e preparando o comentário.');
+      setAnswer('Aguarde enquanto a Bibliomancia é processada.', false);
+
+      try {
+        const pensataData = await postJson('/random_pensata', {
+          term: 'none',
+          book: 'LO'
+        }, currentController.signal);
+
+        const pensataText = (pensataData?.text || '').trim();
+        setStatus('Analisando a pensata...');
+        setContext(pensataText || 'Pensata sorteada sem texto retornado.');
+
+        const commentaryData = await postJson('/llm_query', {
+          query: `Comente a seguinte Pensata: ${pensataText}`,
+          model: 'gpt-5.4-nano',
+          temperature: 0.3,
+          llm_max_results: 3,
+          max_output_tokens: 1000,
+          vector_store_names: ['ALLWV'],
+          instructions: COMMENTARY_INSTRUCTIONS,
+          reasoning_effort: 'none',
+          verbosity: 'low',
+          use_session: false
+        }, currentController.signal);
+
+        setCompactResultsMode(true);
+        setAnswer(formatPensata(pensataData, commentaryData?.text), false);
+        setStatus('Bibliomancia concluída.');
+      } catch (error) {
+        const message = error?.name === 'AbortError'
+          ? 'tempo limite excedido.'
+          : (error.message || 'falha inesperada.');
+        setCompactResultsMode(true);
+        setAnswer(`Erro na bibliomancia: ${message}`, true);
+        setStatus('Falha ao executar a Bibliomancia.');
+      } finally {
+        clearTimeout(timeoutId);
+        drawButtonEl.disabled = false;
+        currentController = null;
+      }
+    }
+
+    drawButtonEl.addEventListener('click', drawPensata);
+  </script>
+</body>
+</html>

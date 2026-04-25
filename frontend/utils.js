@@ -707,9 +707,18 @@ function showMessage(container, message, type = 'error') {
     try { if (typeof resetLLM === 'function') resetLLM('default'); } catch {}
     try { if (typeof resetLLM === 'function') resetLLM('ragbot'); } catch {}
 
-    // Navigate immediately
+    // If embedded in an iframe, open Home in a normal top-level window/tab.
     const href = a.getAttribute('href') || 'index.html';
-    try { window.location.assign(href); } catch { window.location.href = href; }
+    const resolvedHref = new URL(href, window.location.href).toString();
+    if (window.self !== window.top) {
+      try {
+        window.open(resolvedHref, '_blank', 'noopener');
+        return;
+      } catch {}
+    }
+
+    // Navigate immediately in normal top-level pages.
+    try { window.location.assign(resolvedHref); } catch { window.location.href = resolvedHref; }
   }
   document.addEventListener('click', onClick, true);
 })();
