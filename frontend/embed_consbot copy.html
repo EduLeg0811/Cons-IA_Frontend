@@ -17,10 +17,22 @@
     .embed-shell {
       max-width: 920px;
       margin: 0 auto;
+      padding: 10px 12px;
+    }
+
+    .embed-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-2xl);
+      box-shadow: var(--shadow-sm);
+      padding: 12px 14px;
+    }
+
+    .embed-header {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px 6px;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .embed-header-icon {
@@ -52,32 +64,31 @@
       filter: saturate(1.05);
     }
 
-    .embed-brand {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0px;
-      flex-shrink: 0;
+    .embed-header-copy {
+      min-width: 0;
     }
 
     .embed-title {
       margin: 0;
       color: var(--gray-900);
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      line-height: 1.1;
-      text-align: center;
+      line-height: 1.2;
+    }
+
+    .embed-subtitle {
+      margin: 2px 0 0;
+      color: var(--gray-600);
+      font-size: 0.88rem;
+      line-height: 1.35;
+      font-style: italic;
     }
 
     .search-container {
-      flex: 1;
-      min-width: 0;
-      margin-bottom: 0;
+      margin-bottom: 6px;
     }
 
     .search-input-wrapper {
-      display: flex;
-      align-items: center;
       padding: 8px 10px;
       gap: 10px;
       border-radius: 18px;
@@ -101,10 +112,8 @@
 
     .response-container {
       width: 100%;
-      margin-top: 2px;
+      margin-top: 0;
       display: none;
-      padding: 0 12px 10px;
-      box-sizing: border-box;
     }
 
     .response-frame {
@@ -191,35 +200,53 @@
     @media (max-width: 720px) {
       .embed-shell {
         padding: 8px;
-        gap: 8px;
+      }
+
+      .embed-card {
+        padding: 10px 12px;
+      }
+
+      .embed-title {
+        font-size: 1rem;
+      }
+
+      .embed-subtitle {
+        font-size: 0.84rem;
       }
     }
   </style>
 </head>
 <body class="theme-bots">
   <div class="embed-shell">
-    <div class="embed-brand">
-      <h1 class="embed-title" id="title">ConsBOT</h1>
-      <a class="embed-header-icon" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
-        <img src="/icon.png" alt="Cons-IA">
-      </a>
-    </div>
-
-    <div class="search-container">
-      <div class="search-row">
-        <div class="search-input-wrapper">
-          <textarea id="queryInput" placeholder="Olá Conscienciólogo! Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
-          <button id="askButton" class="search-button" type="button" aria-label="Consultar">
-            <i class="fas fa-paper-plane"></i>
-          </button>
+    <div class="embed-card">
+      <div class="embed-header">
+        <a class="embed-header-icon" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
+          <img src="/icon.png" alt="Cons-IA">
+        </a>
+        <div class="embed-header-copy">
+          <h1 class="embed-title" id="title">ConsBOT</h1>
+          <p class="embed-subtitle" id="subtitle"></p>
         </div>
       </div>
-    </div>
 
-    <div class="response-container">
-      <div class="search-input-wrapper response-frame is-empty" id="responseFrame">
-        <div class="response-body markdown-content" id="answerBox">A resposta aparecerá aqui.</div>
+      <div class="search-container">
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <textarea id="queryInput" placeholder="Olá Conscienciólogo! Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
+            <button id="askButton" class="search-button" type="button" aria-label="Consultar">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
       </div>
+
+      <div class="response-container">
+        <div class="search-input-wrapper response-frame is-empty" id="responseFrame">
+          <div class="response-body markdown-content" id="answerBox">A resposta aparecerá aqui.</div>
+        </div>
+      </div>
+
+      <!--<div class="embed-footnote">Parâmetros opcionais: <code>?api=https://seu-backend</code>, <code>&source=ALLWV</code>, <code>&title=Seu%20Título</code>.</div>-->
     </div>
   </div>
 
@@ -294,15 +321,15 @@
     const placeholder = params.get('placeholder') || 'Olá Conscienciólogo! Sobre o que você gostaria de conversar?';
     const initialQuestion = params.get('question') || '';
 
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
     const queryInputEl = document.getElementById('queryInput');
     const askButtonEl = document.getElementById('askButton');
     const answerBoxEl = document.getElementById('answerBox');
     const responseFrameEl = document.getElementById('responseFrame');
 
-    const titleEl = document.getElementById('title');
-
-    document.title = title;
     titleEl.textContent = title;
+    subtitleEl.textContent = subtitle;
     queryInputEl.placeholder = placeholder;
     queryInputEl.value = initialQuestion;
 
