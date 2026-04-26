@@ -85,8 +85,8 @@ BLOCKED_IPS = [
 # Rate-limit por IP para /llm_query (contagem diaria em memoria)
 IP_DAILY_ACCESS = {}
 IP_DAILY_ACCESS_LOCK = threading.Lock()
-FORCE_MODEL_THRESHOLD = 10
-BLOCK_THRESHOLD = 20
+FORCE_MODEL_THRESHOLD = 50
+BLOCK_THRESHOLD = 100
 FORCED_MODEL = "gpt-5.4-mini"
 MEMORY_TRACE_ENABLED = os.getenv("MEMORY_TRACE_ENABLED", "1") == "1"
 MEMORY_TRACE_HEADERS = os.getenv("MEMORY_TRACE_HEADERS", "0") == "1"

@@ -407,7 +407,7 @@
 
       const popupWindow = window.open(popupUrl.toString(), 'consbotPopup', popupFeatures);
       if (!popupWindow) {
-        window.location.href = popupUrl.toString();
+        throw new Error('o navegador bloqueou a abertura da nova janela.');
         return false;
       }
 
