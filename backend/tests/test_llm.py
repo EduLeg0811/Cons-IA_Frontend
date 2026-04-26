@@ -288,11 +288,8 @@ with col_left:
         model = st.selectbox(
             "Modelo",
             options=[
-                "gpt-5.4",
-                "gpt-5.2",
-                "gpt-5-nano",
-                "gpt-4.1-mini",
-                "gpt-4.1-nano",
+                "gpt-5.4-mini",
+                "gpt-5.4-nano",
             ],
             index=0,
             help="Modelos mais recentes recomendados para uso com Responses API.",

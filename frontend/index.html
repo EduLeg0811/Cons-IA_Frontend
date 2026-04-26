@@ -989,8 +989,8 @@
 
             function resetConfigToDefault() {
               try {
-                const defModelLlm = (typeof MODEL_LLM !== 'undefined') ? MODEL_LLM : 'gpt-4.1-mini';
-                const defModelRagbot = (typeof MODEL_RAGBOT !== 'undefined') ? MODEL_RAGBOT : 'gpt-5.4';
+                const defModelLlm = (typeof MODEL_LLM !== 'undefined') ? MODEL_LLM : 'gpt-5.4-mini';
+                const defModelRagbot = (typeof MODEL_RAGBOT !== 'undefined') ? MODEL_RAGBOT : 'gpt-5.4-mini';
                 const defTemperature = (typeof TEMPERATURE !== 'undefined') ? TEMPERATURE : 0.3;
                 const defLlmMaxResults = (typeof LLM_MAX_RESULTS !== 'undefined') ? LLM_MAX_RESULTS : 3;
                 const defMaxOutputTokens = (typeof MAX_OUTPUT_TOKENS !== 'undefined') ? MAX_OUTPUT_TOKENS : 500;
@@ -1051,19 +1051,15 @@
             <div class="config-field">
               <label for="cfg-model-llm">MODEL_LLM</label>
               <select id="cfg-model-llm">
-                <option value="gpt-5.4">gpt-5.4</option>
-                <option value="gpt-5.2">gpt-5.2</option>
-                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+                <option value="gpt-5.4-nano">gpt-5.4-nano</option>
               </select>
             </div>
             <div class="config-field">
               <label for="cfg-model-ragbot">MODEL_RAGBOT</label>
               <select id="cfg-model-ragbot">
-                <option value="gpt-5.4">gpt-5.4</option>
-                <option value="gpt-5.2">gpt-5.2</option>
-                <option value="gpt-4.1-nano">gpt-4.1-nano</option>
-                <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+                <option value="gpt-5.4-nano">gpt-5.4-nano</option>
               </select>
             </div>
 

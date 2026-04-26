@@ -24,14 +24,14 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
 
   //container.innerHTML = '';
 
-  
-  //console.log("showSortedData*** [query]:", query); 
-  //console.log("showSortedData*** [flag_grouping]:", flag_grouping); 
+
+  //console.log("showSortedData*** [query]:", query);
+  //console.log("showSortedData*** [flag_grouping]:", flag_grouping);
   //console.log("showSortedData*** [sortedData]:", sortedData);
   //console.log("showSortedData*** [FLAG_FULL_BADGES]:", FLAG_FULL_BADGES);
-  
-  
-  
+
+
+
   if (!sortedData || typeof sortedData !== 'object' || Object.keys(sortedData).length === 0) {
     container.insertAdjacentHTML(
       'beforeend',
@@ -151,7 +151,7 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
     // MODO ALL: Se flag_grouping for false, cria painéis para todos os itens
     // --------------------------------------------------------------------
   } else {
-    
+
     let allHtml = '';
     const sortedAllItems = [...allItems].sort((a, b) => {
       const scoreA = a.score ?? 0;
@@ -163,7 +163,7 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
       const sourceName = item.source || item.file || item.book || 'Unknown';
       allHtml += format_paragraphs_source(item, sourceName, query);
     });
-    
+
     const allPanel = `
     <div id="all-results" class="collapse-panel">
       <div class="displaybox-container">
@@ -174,7 +174,7 @@ function showSortedData(container, sortedData, query = '', flag_grouping = false
     </div>`;
     container.insertAdjacentHTML('beforeend', allPanel);
 
-    
+
 
 
   }
@@ -262,7 +262,7 @@ const format_paragraph_LO = (item, query) => {
     }
     const metaBadges = badgeParts.join('');
 
-    // ------------------------------------------------------------------------------------------------------------------------- 
+    // -------------------------------------------------------------------------------------------------------------------------
 
     const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
 
@@ -298,16 +298,16 @@ const format_paragraph_DAC = (item, query) => {
     let badgeParts = [];
     if (source)   badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
     if (title)    badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
-    
+
     if (pagina)   badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
-      
+
     if (FLAG_FULL_BADGES) {
       if (argumento)badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(argumento)}</span>`);
       if (section)  badgeParts.push(`<span class="metadata-badge estilo2"><em>${escapeHtml(section)}</em></span>`);
       if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
-   
+
     metaBadges = badgeParts.join('');
 
     // ------------------------------------------------------------------------------------------------------------------------
@@ -317,7 +317,7 @@ const format_paragraph_DAC = (item, query) => {
 
     return finalHtml;
 };
-    
+
 
 
 // ===========================================================================
@@ -375,7 +375,7 @@ const format_paragraph_CCG = (item, query) => {
       if (score > 0.0)     badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
   }
- 
+
   const metaBadges = badgeParts.join('');
 
   // -------------------------------------------------------------------------------------------------------------------------
@@ -397,7 +397,7 @@ const format_paragraph_CCG = (item, query) => {
 };
 
 
-  
+
 // ===========================================================================
 // EC: Content_Text  Markdown_Text  Title  Number  Source ... (+ HIGHLIGHT)
 // ===========================================================================
@@ -417,12 +417,12 @@ const format_paragraph_EC = (item, query) => {
   let source = item.source || '';
   source = bookName(source);
 
-  
+
   const defText = '**Definologia.** ' + text;
 
   // Texto do parágrafo + highlight
   // Caso especial EC
-  const textCompleted = '**Definologia.** ' + text;  
+  const textCompleted = '**Definologia.** ' + text;
   const rawHtml = renderMarkdown(textCompleted);
   const safeHtml = (window.DOMPurify ? DOMPurify.sanitize(rawHtml) : rawHtml);
   const q = window.__lastSearchQuery || '';
@@ -439,7 +439,7 @@ const format_paragraph_EC = (item, query) => {
     scoreHtml = (typeof score === 'number' && !Number.isNaN(score))
         ? `<span class="rag-badge">Score: ${score.toFixed(2)}</span>` : '';
   }
-    
+
   // Monta os badges
   // -------------------------------------------------------------------------------------------------------------------------
   let badgeParts = [];
@@ -459,18 +459,18 @@ const format_paragraph_EC = (item, query) => {
       if (score > 0.0)      badgeParts.push(`<span class="metadata-badge estilo2"> @${escapeHtml(score)}</span>`);
     }
   }
-  
+
   const metaBadges = badgeParts.join('');
   // -------------------------------------------------------------------------------------------------------------------------
 
-  // Monta o link PDF  
+  // Monta o link PDF
   const arquivo = title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/Ç/g, "C");
   const verbLink = VERBETES_URL + encodeURIComponent(arquivo) + ".pdf";
   const pdfLink = `
     <a href="${verbLink}" target="_blank" rel="noopener noreferrer" title="Abrir PDF em nova aba" class="pdf-link">
         <i class="fas fa-file-pdf"></i>
     </a>`;
-  
+
 
   // Monta o pane
   const finalHtml = `
@@ -531,7 +531,7 @@ const format_paragraph_QUEST = (item, query) => {
   if (source) badgeParts.push(`<span class="metadata-badge estilo1"><strong>${escapeHtml(source)}</strong></span>`);
   if (title)  badgeParts.push(`<span class="metadata-badge estilo2"><strong>${escapeHtml(title)}</strong></span>`);
   //if (pagina) badgeParts.push(`<span class="metadata-badge estilo3">pág. ${escapeHtml(pagina)}</span>`);
-  
+
   if (paragraph_number) badgeParts.push(`<span class="metadata-badge estilo2"> #${escapeHtml(paragraph_number)}</span>`);
   if (formattedDate)   badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(formattedDate)}</span>`);
   if (author) badgeParts.push(`<span class="metadata-badge estilo2">${escapeHtml(author)}</span>`);
@@ -542,7 +542,7 @@ const format_paragraph_QUEST = (item, query) => {
 
   const metaBadges = badgeParts.join('');
 
-  // ------------------------------------------------------------------------------------------------------------------------- 
+  // -------------------------------------------------------------------------------------------------------------------------
 
 
   const finalHtml = `
@@ -581,7 +581,7 @@ const format_paragraph_Default = (item, query) => {
   let source = item.source || '';
   source = bookName(source);
 
-  
+
     // Casos especiais
     const textCompleted = text;
 
@@ -606,7 +606,7 @@ const format_paragraph_Default = (item, query) => {
 
   const metaBadges = badgeParts.join('');
 
-  // ------------------------------------------------------------------------------------------------------------------------- 
+  // -------------------------------------------------------------------------------------------------------------------------
 
   const finalHtml = `<div class="displaybox-item"><div class="displaybox-text markdown-content">${highlighted}</div>${metaBadges}</div>`;
 
@@ -645,6 +645,63 @@ function showSimple(container, data) {
         <div class="displaybox-text markdown-content">
           ${mdHtml}
           <div class="simple-ref">${ref}</div>
+        </div>
+      </div>
+    </div>`;
+
+  container.insertAdjacentHTML('beforeend', html);
+}
+
+// ________________________________________________________________________________________
+// Show Pensata
+// - Variante visual dedicada para a pensata sorteada na Bibliomancia.
+// - Estilo inline para facilitar ajustes locais de cor, borda, tipografia e espaçamento.
+// ________________________________________________________________________________________
+function showPensata(container, data) {
+  const text = data?.text ?? '';
+  const ref = data?.ref ?? '';
+  const mdHtml = renderMarkdown(text);
+
+  const html = `
+    <div
+      class="displaybox-container simple"
+      style="
+        position: relative;
+        margin-bottom: 16px;
+        border: 1px solid rgba(253, 186, 116, 0.45);
+        border-left: 4px solid rgba(249, 115, 22, 0.55);
+        border-radius: 12px;
+        background: #fffdf6;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+        overflow: hidden;
+      "
+    >
+      <div
+        class="displaybox-content"
+        style="
+          position: relative;
+          padding: 18px 20px;
+          background: #fffdf6;
+        "
+      >
+        <div
+          class="displaybox-text markdown-content"
+          style="
+            color: #3f3a2a;
+            font-size: 0.96rem;
+            line-height: 1.6;
+          "
+        >
+          ${mdHtml}
+          <div
+            class="simple-ref"
+            style="
+              margin-top: 10px;
+              color: #7d7252;
+              font-size: 0.78rem;
+              line-height: 1.4;
+            "
+          >${ref}</div>
         </div>
       </div>
     </div>`;
@@ -764,7 +821,7 @@ try {
 // ________________________________________________________________________________________
 function showBotMetainfo(container, metaData) {
 
- 
+
   if (!container) return;
 
   // Extrair metadados relevantes
@@ -789,13 +846,13 @@ function showBotMetainfo(container, metaData) {
 
   // GPT-5 or GPT-5.1
   if (model_str.includes('gpt-5')) {
-    
+
     badgeParts.push(`<span class="metadata-badge estilo5">Verbosity: ${escapeHtml(verbosity)}</span>`);
     badgeParts.push(`<span class="metadata-badge estilo5">Effort: ${escapeHtml(effort)}</span>`);
 
 
   } else {
-    
+
     badgeParts.push(`<span class="metadata-badge estilo5">Temp: ${escapeHtml(temperature)}</span>`);
   }
 

@@ -4,7 +4,7 @@
 // All configuration keys should use UPPER_SNAKE_CASE for consistency
 const CONFIG = {
   // Model settings
-  MODEL_LLM: 'gpt-5.4-nano',
+  MODEL_LLM: 'gpt-5.4-mini',
   MODEL_RAGBOT: 'gpt-5.4-mini',
   //MODEL_RAGBOT: 'gpt-4.1-mini',
 

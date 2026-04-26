@@ -9,6 +9,12 @@
   <link rel="stylesheet" href="/styles/style.css">
   <link rel="icon" type="image/png" href="/icon.png">
   <style>
+    html,
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
     body.theme-apps {
       min-height: auto;
       background: transparent;
@@ -17,22 +23,49 @@
     .embed-shell {
       max-width: 920px;
       margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
       padding: 10px 12px;
-    }
-
-    .embed-card {
-      background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-2xl);
-      box-shadow: var(--shadow-sm);
-      padding: 12px 14px;
+      box-sizing: border-box;
     }
 
     .embed-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
-      margin-bottom: 10px;
+      flex: 0 0 auto;
+      min-width: 0;
+      margin-bottom: 0;
+    }
+
+    .embed-header-copy {
+      min-width: 0;
+      flex: 0 0 auto;
+    }
+
+    .embed-header-copy > * {
+      min-width: 0;
+    }
+
+    .embed-header-text {
+      min-width: 0;
+    }
+
+    .embed-header-text .embed-title,
+    .embed-header-text .embed-subtitle {
+      overflow-wrap: anywhere;
+    }
+
+    .embed-header-icon-link {
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .embed-header-copy {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .embed-header-icon {
@@ -44,11 +77,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       overflow: hidden;
-      text-decoration: none;
       transition: transform 160ms ease, opacity 160ms ease, filter 160ms ease;
-      margin-top: -4px;
     }
 
     .embed-header-icon img {
@@ -81,320 +111,204 @@
     }
 
     .action-container {
-      max-width: none;
-      padding: 1px 0 0;
+      flex: 0 0 auto;
+      display: inline-flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      margin-left: 40px;
+      padding: 0;
+    }
+
+    .lo-badge {
+      width: 85px;
+      height: 85px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .lo-badge img {
+      width: 85%;
+      height: 85%;
+      object-fit: contain;
+      display: block;
     }
 
     .pensata-button {
+      display: inline-flex !important;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 0 !important;
       padding: 12px 18px;
       font-size: 0.96rem;
       border-radius: 18px;
       gap: 10px;
+      white-space: nowrap;
     }
 
-    .action-hint {
-      margin-top: 10px;
-      font-size: 0.86rem;
-      line-height: 1.4;
+    .pensata-button i {
+      display: block;
+      line-height: 1;
     }
 
-    .results {
-      margin-top: 6px;
-      width: 100%;
-      display: none;
+    .pensata-button.mancia-loading i,
+    .pensata-button.mancia-loading span {
+      opacity: 0;
     }
 
-    .embed-result {
-      width: 100%;
-      background: var(--white);
-      border: 2px solid var(--gray-200);
-      border-radius: 18px;
-      box-shadow: none;
-      padding: 12px 14px;
-      margin-bottom: 8px;
-    }
-
-    .embed-result--pensata {
-      background: #fffdf4;
-      border-color: #f4efd8;
-    }
-
-    .embed-result h3 {
-      margin: 0 0 8px;
-      color: var(--apps-primary);
-      font-size: 0.95rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .embed-result p {
-      margin: 0;
-      color: var(--gray-800);
-      font-size: 0.92rem;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-
-    .embed-result .markdown-content {
-      color: var(--gray-800);
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
-    .embed-result .markdown-content p:first-child {
-      margin-top: 0;
-    }
-
-    .embed-result .markdown-content p:last-child {
-      margin-bottom: 0;
-    }
-
-    .simple-ref {
-      margin-top: 8px;
-      font-size: 0.78rem;
-    }
-
-    .embed-footnote {
-      margin-top: 8px;
-      color: var(--gray-500);
-      font-size: 0.76rem;
-      line-height: 1.35;
-    }
-
-    .is-hidden {
-      display: none !important;
-    }
-
-    .response-loading {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-height: 44px;
-      color: var(--gray-500);
-    }
-
-    .response-loading-dot {
-      width: 8px;
-      height: 8px;
+    .pensata-button.mancia-loading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 18px;
+      height: 18px;
+      margin: auto;
       border-radius: 999px;
-      background: var(--apps-primary);
-      opacity: 0.28;
-      animation: embedPulse 1.2s ease-in-out infinite;
+      border: 2px solid rgba(255, 255, 255, 0.88);
+      border-top-color: transparent;
+      animation: embedSpin 0.7s linear infinite;
+      pointer-events: none;
     }
 
-    .response-loading-dot:nth-child(2) {
-      animation-delay: 0.18s;
-    }
-
-    .response-loading-dot:nth-child(3) {
-      animation-delay: 0.36s;
-    }
-
-    @keyframes embedPulse {
-      0%, 100% {
-        transform: translateY(0);
-        opacity: 0.25;
+    @keyframes embedSpin {
+      from {
+        transform: rotate(0deg);
       }
-      50% {
-        transform: translateY(-2px);
-        opacity: 0.72;
+      to {
+        transform: rotate(360deg);
       }
     }
 
     @media (max-width: 720px) {
       .embed-shell {
         padding: 8px;
+        gap: 10px;
       }
 
-      .embed-card {
-        padding: 10px 12px;
+      .embed-title {
+        font-size: 1rem;
+      }
+
+      .embed-subtitle {
+        font-size: 0.84rem;
       }
     }
   </style>
 </head>
 <body class="theme-apps">
   <div class="embed-shell">
-    <div class="embed-card">
-      <div class="embed-header">
-        <a class="embed-header-icon" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
+    <div class="embed-header">
+      <a class="embed-header-icon-link" id="brandLink" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
+        <div class="embed-header-icon">
           <img src="/icon.png" alt="Cons-IA">
-        </a>
-        <div>
+        </div>
+      </a>
+      <div class="embed-header-copy">
+        <div class="embed-header-text">
           <h1 class="embed-title" id="title">Bibliomancia</h1>
-          <p class="embed-subtitle" id="subtitle">Sorteio e análise de ortopensata com auxílio da IA.</p>
+          <p class="embed-subtitle" id="subtitle">Sorteio e análise de ortopensata com IA.</p>
         </div>
       </div>
+    </div>
 
-      <div class="action-container">
-        <button id="drawButton" class="pensata-button" type="button">
-          <i class="fas fa-book-open"></i>
-          <span>Ortopensata</span>
-        </button>
-        <!-- <p class="action-hint" id="actionHint">
-          Sorteia pensata do Léxico de Ortopensatas.<br>
-          Comenta com auxílio da IA.
-        </p> -->
-      </div>
-
-      <div class="results" id="results">
-        <div class="embed-result" id="emptyState">
-          <h3><i class="fas fa-sparkles"></i> Resultado</h3>
-          <p>A pensata sorteada e o comentário aparecerão aqui.</p>
-        </div>
-      </div>
-
-      <!--<div class="embed-footnote" id="footnote">Parâmetros opcionais: <code>?api=https://seu-backend</code>, <code>&title=Seu%20Título</code>, <code>&subtitle=Seu%20Subtítulo</code>.</div>-->
+    <div class="action-container">
+     <!--  <div class="lo-badge" aria-hidden="true">
+        <img src="/public/LO.png" alt="">
+      </div> -->
+      <button id="drawButton" class="pensata-button" type="button">
+        <i class="fas fa-book-open"></i>
+        <span>Ortopensata</span>
+      </button>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   <script>
-    const COMMENTARY_INSTRUCTIONS = [
-      'Você é um assistente especialista em Conscienciologia, focado em responder perguntas sobre o livro Léxico de Ortopensatas, de autoria de Waldo Vieira, utilizando documentos de referência quando necessário.',
-      'Analise o significado do parágrafo ("Pensata") sob o paradigma conscienciológico.',
-      'Comente de maneira objetiva, utilizando neologismos e a abordagem específica da Conscienciologia.',
-      'Limite a resposta a apenas 1 parágrafo breve e objetivo.',
-      'Não repita nem transcreva a Pensata; inicie diretamente com a explicação seca.',
-      'Não cite nem referencie fontes.',
-      'Use Markdown limpo.',
-      '',
-      '**Autoquestionamento:**',
-      'Breve pergunta para promover reflexão sobre a aplicação pessoal da Pensata visando à evolução consciencial.'
-    ].join('\n');
-
     const params = new URLSearchParams(window.location.search);
     const apiBase = (params.get('api') || 'https://cons-ai-server.onrender.com').replace(/\/+$/, '');
     const title = params.get('title') || 'Bibliomancia';
-    const subtitle = params.get('subtitle') || 'Sorteio e análise de ortopensata com auxílio da IA.';
+    const subtitle = params.get('subtitle') || 'Sorteio e análise de ortopensata com IA.';
+    const popupPath = params.get('popup') || '/index_mancia.html';
 
     const titleEl = document.getElementById('title');
     const subtitleEl = document.getElementById('subtitle');
     const drawButtonEl = document.getElementById('drawButton');
-    const actionHintEl = document.getElementById('actionHint');
-    const resultsEl = document.getElementById('results');
-    const emptyStateEl = document.getElementById('emptyState');
-    const footnoteEl = document.getElementById('footnote');
-
-    let currentController = null;
+    const brandLinkEl = document.getElementById('brandLink');
 
     titleEl.textContent = title;
     subtitleEl.textContent = subtitle;
 
-    function renderMarkdown(text) {
-      const rawHtml = marked.parse(text || '', { breaks: true });
-      return DOMPurify.sanitize(rawHtml);
+    brandLinkEl.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.open(brandLinkEl.href, '_blank', 'noopener,noreferrer');
+    });
+
+    function openInNewTabSilently(url) {
+      const tempLink = document.createElement('a');
+      tempLink.href = url;
+      tempLink.target = '_blank';
+      tempLink.rel = 'noopener noreferrer';
+      tempLink.style.display = 'none';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      tempLink.remove();
+      return true;
     }
 
-    function setCompactMode(enabled) {
-      if (actionHintEl) {
-        actionHintEl.classList.toggle('is-hidden', enabled);
+    function openManciaPopup() {
+      const popupUrl = new URL(popupPath, window.location.href);
+      popupUrl.searchParams.set('api', apiBase);
+      popupUrl.searchParams.set('autostart', '1');
+
+      const popupWidth = Math.min(Math.max(window.screen?.availWidth ? Math.round(window.screen.availWidth * 0.78) : 1100, 960), 1440);
+      const popupHeight = Math.min(Math.max(window.screen?.availHeight ? Math.round(window.screen.availHeight * 0.84) : 820, 720), 1200);
+      const popupLeft = Math.max(0, Math.round(((window.screen?.availWidth || popupWidth) - popupWidth) / 2));
+      const popupTop = Math.max(0, Math.round(((window.screen?.availHeight || popupHeight) - popupHeight) / 2));
+      const popupFeatures = [
+        'popup=yes',
+        'noopener=yes',
+        'noreferrer=yes',
+        `width=${popupWidth}`,
+        `height=${popupHeight}`,
+        `left=${popupLeft}`,
+        `top=${popupTop}`,
+        'resizable=yes',
+        'scrollbars=yes'
+      ].join(',');
+
+      const popupWindow = window.open(popupUrl.toString(), 'manciaPopup', popupFeatures);
+      if (!popupWindow) {
+        return openInNewTabSilently(popupUrl.toString());
       }
-      if (footnoteEl) {
-        footnoteEl.classList.toggle('is-hidden', enabled);
-      }
+
+      try {
+        popupWindow.focus();
+      } catch {}
+      return true;
     }
 
-    function renderResults(pensataText, reference, commentaryText) {
-      resultsEl.innerHTML = `
-        <div class="embed-result embed-result--pensata">
-          <h3><i class="fas fa-book-open"></i> Pensata sorteada</h3>
-          <div class="markdown-content">${renderMarkdown(pensataText)}</div>
-          <div class="simple-ref">${reference}</div>
-        </div>
-        <div class="embed-result">
-          <h3><i class="fas fa-comment-dots"></i> Comentário</h3>
-          <div class="markdown-content">${renderMarkdown(commentaryText)}</div>
-        </div>
-      `;
-    }
-
-    function renderError(message) {
-      resultsEl.innerHTML = `
-        <div class="error">
-          <p>Erro na bibliomancia: ${message}</p>
-        </div>
-      `;
-    }
-
-    async function postJson(path, payload, signal) {
-      const response = await fetch(`${apiBase}${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal
-      });
-
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP ${response.status}`);
-      }
-      return data;
-    }
-
-    async function drawPensata() {
+    function drawPensata() {
       if (drawButtonEl.disabled) {
         return;
       }
 
-      if (currentController) {
-        currentController.abort();
-      }
-
-      currentController = new AbortController();
-      const timeoutId = setTimeout(() => currentController.abort(), 45000);
-
       drawButtonEl.disabled = true;
-      resultsEl.style.display = 'block';
-      emptyStateEl?.classList.add('is-hidden');
-      setCompactMode(false);
-      resultsEl.innerHTML = `
-        <div class="embed-result">
-          <div class="response-loading" aria-label="Processando">
-            <span class="response-loading-dot"></span>
-            <span class="response-loading-dot"></span>
-            <span class="response-loading-dot"></span>
-          </div>
-        </div>
-      `;
+      drawButtonEl.classList.add('mancia-loading');
 
       try {
-        const pensataData = await postJson('/random_pensata', {
-          term: 'none',
-          book: 'LO'
-        }, currentController.signal);
-
-        const pensataText = (pensataData?.text || 'Pensata não retornada.').trim();
-        const page = String(pensataData?.pagina || '').trim();
-        const reference = page ? `Léxico de Ortopensatas, 2019, pág. ${page}` : 'Léxico de Ortopensatas, 2019';
-
-        const commentaryData = await postJson('/llm_query', {
-          query: `Comente a seguinte Pensata: ${pensataText}`,
-          model: 'gpt-5.4-mini',
-          temperature: 0.3,
-          llm_max_results: 3,
-          max_output_tokens: 1000,
-          vector_store_names: ['ALLWV'],
-          instructions: COMMENTARY_INSTRUCTIONS,
-          reasoning_effort: 'none',
-          verbosity: 'low',
-          use_session: false
-        }, currentController.signal);
-
-        setCompactMode(true);
-        renderResults(pensataText, reference, commentaryData?.text || 'Sem comentário retornado.');
-      } catch (error) {
-        const message = error?.name === 'AbortError'
-          ? 'tempo limite excedido.'
-          : (error.message || 'falha inesperada.');
-        setCompactMode(true);
-        renderError(message);
+        openManciaPopup();
       } finally {
-        clearTimeout(timeoutId);
         drawButtonEl.disabled = false;
-        currentController = null;
+        drawButtonEl.classList.remove('mancia-loading');
       }
     }
 

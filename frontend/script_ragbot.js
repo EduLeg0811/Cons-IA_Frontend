@@ -55,6 +55,7 @@ let currentRagbotVectorStore = null;
 let currentRagbotInstructions = null;
 let pendingInitialQuestion = null;
 let initialQuestionSubmitted = false;
+const ALLOWED_RAGBOT_SOURCES = new Set(['ALLWV', 'AUTORES', 'ENGLISH', 'MINI']);
 
 // Registry de chat_ids por escopo (ragbot, quiz, etc.)
 const _chatIds = {};
@@ -127,8 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch {}
 
     try {
-      const sourceParam = (pageParams.get('source') || '').trim().toUpperCase();
-      if (sourceParam) {
+      const sourceParamRaw = (pageParams.get('source') || '').trim().toUpperCase();
+      const sourceParam = ALLOWED_RAGBOT_SOURCES.has(sourceParamRaw) ? sourceParamRaw : 'ALLWV';
+      if (sourceParamRaw) {
         const rawCfg = localStorage.getItem('appConfig_ragbot');
         const cfg = rawCfg ? JSON.parse(rawCfg) : {};
         cfg.books = [sourceParam];

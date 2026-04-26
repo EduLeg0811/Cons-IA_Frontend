@@ -34,7 +34,7 @@ _CONVERSATION_MAX_ITEMS = int(os.getenv("CONVERSATION_MAX_ITEMS", "512"))
 _conversation_last_id = OrderedDict()  # chat_id -> (last_response_id, updated_at)
 
 
-  
+
 
 logger = logging.getLogger(__name__)
 
@@ -213,11 +213,11 @@ def generate_llm_answer(
     # Monta payload da Responses API
     # -------------------------------------------------------------------------
     model_str = str(model)
-   
 
-   
+
+
     # Branch para GPT-5.2 (temperature, usar reasoning/text)
-    if model_str.startswith("gpt-5.2") or model_str.startswith("gpt-5.4"):
+    if model_str.startswith("gpt-5.2") or model_str.startswith("gpt-5.4") or model_str.startswith("gpt-5.5"):
         llm_str = {
             "model": model,
             "tools": [{
@@ -345,7 +345,7 @@ def get_vector_store_ids(vector_store_names):
         # Fallback to default
         return DEFAULT_VECTOR_STORE_OPENAI
 
-    
+
     # Achata um nível de listas aninhadas: [[id1], [id2]] -> [id1, id2]
     if isinstance(vector_store_names, (list, tuple)):
         flat = []
@@ -428,7 +428,7 @@ def extract_citations_string(response_main) -> str:
             parts.append(name)
     return "; ".join(parts)
 
-    
+
 
 
 

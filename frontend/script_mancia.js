@@ -3,6 +3,8 @@ let controller = null;
 document.addEventListener('DOMContentLoaded', () => {
     const resultsDiv   = document.getElementById('results');
     const searchButton = document.getElementById('pensataButton');
+    const pageParams = new URLSearchParams(window.location.search);
+    const shouldAutostart = pageParams.get('autostart') === '1';
   
     // Initialize download buttons
     window.downloadUtils.initDownloadButtons('mancia');
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             removeLoading(resultsDiv);
             //showTitle(resultsDiv, "Pensata Sorteada");
-            showSimple(resultsDiv, pensJson);
+            showPensata(resultsDiv, pensJson);
             
 
             // Extrai text da resposta
@@ -151,6 +153,20 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(timeoutId);
         controller = null;
     }
+    }
+
+    try {
+        if (shouldAutostart) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (!searchButton.disabled) {
+                        mancia();
+                    }
+                }, 180);
+            }, { once: true });
+        }
+    } catch (e) {
+        console.warn('Falha ao iniciar Bibliomancia automaticamente', e);
     }
 
 });
