@@ -25,7 +25,7 @@
       border: 1px solid var(--gray-200);
       border-radius: var(--radius-2xl);
       box-shadow: var(--shadow-sm);
-      padding: 12px;
+      padding: 12px 14px;
     }
 
     .embed-header {
@@ -82,13 +82,15 @@
 
     .results {
       margin-top: 10px;
+      width: 100%;
     }
 
     .embed-result {
+      width: 100%;
       background: var(--white);
-      border: 1px solid var(--gray-200);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--gray-200);
+      border-radius: 18px;
+      box-shadow: none;
       padding: 12px 14px;
       margin-bottom: 8px;
     }
@@ -133,7 +135,7 @@
       }
 
       .embed-card {
-        padding: 10px;
+        padding: 10px 12px;
       }
     }
   </style>
@@ -214,8 +216,12 @@
     }
 
     function setCompactMode(enabled) {
-      actionHintEl.classList.toggle('is-hidden', enabled);
-      footnoteEl.classList.toggle('is-hidden', enabled);
+      if (actionHintEl) {
+        actionHintEl.classList.toggle('is-hidden', enabled);
+      }
+      if (footnoteEl) {
+        footnoteEl.classList.toggle('is-hidden', enabled);
+      }
     }
 
     function renderResults(pensataText, reference, commentaryText) {
