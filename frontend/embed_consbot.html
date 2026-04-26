@@ -407,8 +407,14 @@
 
       const popupWindow = window.open(popupUrl.toString(), 'consbotPopup', popupFeatures);
       if (!popupWindow) {
-        throw new Error('o navegador bloqueou a abertura da nova janela.');
-        return false;
+        const tabWindow = window.open(popupUrl.toString(), '_blank', 'noopener,noreferrer');
+        if (!tabWindow) {
+          return false;
+        }
+        try {
+          tabWindow.focus();
+        } catch {}
+        return true;
       }
 
       try {
@@ -449,8 +455,7 @@
         openConsbotPopup(query);
         setStatus('ConsBOT aberto.');
       } catch (error) {
-        setAnswer(`Erro ao abrir o ConsBOT: ${error.message || 'falha inesperada.'}`, true);
-        setStatus('Falha ao abrir o ConsBOT.');
+        setStatus('');
       } finally {
         askButtonEl.disabled = false;
         askButtonEl.classList.remove('ragbot-loading');
