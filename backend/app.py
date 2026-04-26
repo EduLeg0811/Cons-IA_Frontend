@@ -85,9 +85,9 @@ BLOCKED_IPS = [
 # Rate-limit por IP para /llm_query (contagem diaria em memoria)
 IP_DAILY_ACCESS = {}
 IP_DAILY_ACCESS_LOCK = threading.Lock()
-FORCE_MODEL_THRESHOLD = 8
+FORCE_MODEL_THRESHOLD = 10
 BLOCK_THRESHOLD = 20
-FORCED_MODEL = "gpt-4.1-mini"
+FORCED_MODEL = "gpt-5.4-mini"
 MEMORY_TRACE_ENABLED = os.getenv("MEMORY_TRACE_ENABLED", "1") == "1"
 MEMORY_TRACE_HEADERS = os.getenv("MEMORY_TRACE_HEADERS", "0") == "1"
 MEMORY_TRACE_ONLY_API = os.getenv("MEMORY_TRACE_ONLY_API", "1") == "1"
@@ -158,7 +158,7 @@ def ip_block_filter(f):
     def decorated_function(*args, **kwargs):
         client_ip = extract_client_ip(request.headers, request.remote_addr)
         logger.info(f"IP do cliente detectado: {client_ip}")  # Log para debug
-        
+
         if client_ip in BLOCKED_IPS:
             logger.warning(f"IP bloqueado tentando acessar ragbot: {client_ip}")
             return {"error": "Acesso negado"}, 403
@@ -286,7 +286,7 @@ class LexicalSearchResource(Resource):
             term = safe_str(data.get("term", ""))
             source = data.get("source", [])  # lista
 
-           
+
             if not term:
                 raise ValueError("Search term is required")
 
@@ -300,7 +300,7 @@ class LexicalSearchResource(Resource):
                         #pprint.pformat(results, indent=2, width=120))
 
 
-            
+
 
             # Monta a resposta diretamente
             response = {
@@ -310,7 +310,7 @@ class LexicalSearchResource(Resource):
                 "count": len(results) if results else 0
             }
 
-           
+
             return response, 200, get_search_headers('lexical')
 
         except Exception as e:
@@ -569,10 +569,10 @@ class DownloadResource(Resource):
         try:
             data = request.get_json(force=True) or {}
             group_results_by_book = data.get("group_results_by_book", False)
-           
+
             #Extrai variáveis
             search_term = data.get("search_term")
-        
+
             docx_bytes = build_docx(data, group_results_by_book)
             filename = f"{search_term}"
             filename = filename[:30]
@@ -594,37 +594,37 @@ class DownloadResource(Resource):
 
 
 # ______________________________________________________________________
-# HELPERS  
+# HELPERS
 # ______________________________________________________________________
 
 def handle_search_error(error: Exception, context: str = "search") -> Tuple[Dict[str, Any], int, Dict[str, str]]:
     """
     Handle search errors consistently.
-    
+
     Args:
         error: The exception that was raised
-        
+
     Returns:
         Tuple of (error_response, status_code, headers)
     """
     error_type = error.__class__.__name__
     error_details = str(error)
-    
+
     if isinstance(error, ValueError):
         status_code = 400
         error_message = f"Invalid request parameters: {error_details}"
     else:
         status_code = 500
         error_message = f"An error occurred during {context}"
-    
+
     logger.error(f"{error_message}: {error}", exc_info=True)
-    
+
     error_response = {
         'error': error_message,
         'error_type': error_type,
         'details': error_details if status_code == 400 else 'Internal server error'
     }
-    
+
     return error_response, status_code, get_search_headers(error)
 
 
@@ -632,10 +632,10 @@ def handle_search_error(error: Exception, context: str = "search") -> Tuple[Dict
 def get_search_headers(search_type: str) -> Dict[str, str]:
     """
     Get standard headers for search responses.
-    
+
     Args:
         search_type: Type of search ('lexical')
-        
+
     Returns:
         Dict with standard response headers
     """
