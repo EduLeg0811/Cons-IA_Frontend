@@ -96,23 +96,31 @@
       padding: 0;
       max-height: none;
       min-height: 0;
+      width: 100%;
     }
 
-    .chat-message {
+    .chat-message,
+    .chat-message.bot {
+      display: block;
+      width: 100%;
       max-width: 100%;
     }
 
-    .message-content {
+    .message-content,
+    .chat-message.bot .message-content {
       width: 100%;
+      max-width: 100%;
       background: var(--white);
       border: 2px solid var(--gray-200);
-      border-radius: 18px;
+      border-radius: 18px !important;
       padding: 8px 10px;
       box-shadow: none;
+      box-sizing: border-box;
     }
 
     .theme-bots .chat-message.bot .message-content {
       padding: 8px 10px;
+      border-radius: 18px !important;
     }
 
     .theme-bots .chat-message.bot .message-content .markdown-content {
