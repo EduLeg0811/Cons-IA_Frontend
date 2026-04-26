@@ -53,6 +53,8 @@ const RAGBOT_CHAT_SCOPE = 'ragbot';
 // Estado atual dos parâmetros dinâmicos do RAGbot (vector store + instruções)
 let currentRagbotVectorStore = null;
 let currentRagbotInstructions = null;
+let pendingInitialQuestion = null;
+let initialQuestionSubmitted = false;
 
 // Registry de chat_ids por escopo (ragbot, quiz, etc.)
 const _chatIds = {};
@@ -73,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsDiv = document.getElementById('results');
     const chatMessages = document.getElementById('chatMessages');
     const searchRow = document.querySelector('.search-row');
+    const pageParams = new URLSearchParams(window.location.search);
 
     
     searchButton.addEventListener('click', ragbot);
@@ -122,6 +125,39 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       if (window.ragbotApplyConfig) window.ragbotApplyConfig();
     } catch {}
+
+    try {
+      const sourceParam = (pageParams.get('source') || '').trim().toUpperCase();
+      if (sourceParam) {
+        const rawCfg = localStorage.getItem('appConfig_ragbot');
+        const cfg = rawCfg ? JSON.parse(rawCfg) : {};
+        cfg.books = [sourceParam];
+        cfg.module = 'ragbot';
+        localStorage.setItem('appConfig_ragbot', JSON.stringify(cfg));
+        localStorage.setItem('appConfig_ragbot_used', 'true');
+        if (window.ragbotApplyConfig) window.ragbotApplyConfig();
+      }
+    } catch (e) {
+      console.warn('Falha ao aplicar source inicial do popup', e);
+    }
+
+    try {
+      const questionParam = (pageParams.get('question') || '').trim();
+      if (questionParam) {
+        pendingInitialQuestion = questionParam;
+        searchInput.value = questionParam;
+        searchInput.style.height = 'auto';
+        searchInput.style.height = Math.min(searchInput.scrollHeight, 120) + 'px';
+
+        setTimeout(() => {
+          if (initialQuestionSubmitted || !pendingInitialQuestion) return;
+          initialQuestionSubmitted = true;
+          searchButton.click();
+        }, 120);
+      }
+    } catch (e) {
+      console.warn('Falha ao preparar pergunta inicial do popup', e);
+    }
 
 
 
@@ -184,6 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
           // Remove initial suggestions if present (manual message sent)
           try { searchInput.dataset.lastQuery = term; } catch {}
+          pendingInitialQuestion = null;
 
           // Remove initial suggestions if present (manual message sent)
           try {

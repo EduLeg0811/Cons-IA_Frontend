@@ -17,10 +17,20 @@
     .embed-shell {
       max-width: 920px;
       margin: 0 auto;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: start;
       padding: 10px 12px 6px;
+      box-sizing: border-box;
+    }
+
+    .embed-main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .embed-header-icon {
@@ -36,7 +46,7 @@
       overflow: hidden;
       text-decoration: none;
       transition: transform 160ms ease, opacity 160ms ease, filter 160ms ease;
-      margin-top: -4px;
+      align-self: center;
     }
 
     .embed-header-icon img {
@@ -58,6 +68,9 @@
       align-items: center;
       gap: 0px;
       flex-shrink: 0;
+      justify-content: flex-start;
+      grid-column: 1;
+      grid-row: 1;
     }
 
     .embed-title {
@@ -70,47 +83,89 @@
     }
 
     .search-container {
-      flex: 1;
-      min-width: 0;
       margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .search-row {
+      width: 100%;
     }
 
     .search-input-wrapper {
       display: flex;
       align-items: center;
+      width: 100%;
+      min-height: 58px;
       padding: 8px 10px;
       gap: 10px;
       border-radius: 18px;
+      box-sizing: border-box;
     }
 
     .search-input {
+      display: block;
+      flex: 1;
       min-height: 26px;
       max-height: 110px;
       padding: 6px 0;
+      margin: 0;
       font-size: 0.95rem;
       line-height: 1.4;
     }
 
     .search-button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 42px;
       height: 42px;
+      padding: 0;
+      border: none;
       font-size: 0.95rem;
       border-radius: 14px;
       flex-shrink: 0;
     }
 
+    .search-button i {
+      display: block;
+      line-height: 1;
+    }
+
+    .search-button.ragbot-loading i {
+      opacity: 0;
+    }
+
+    .search-button.ragbot-loading::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 18px;
+      height: 18px;
+      margin: auto;
+      border-radius: 999px;
+      border: 2px solid rgba(255, 255, 255, 0.88);
+      border-top-color: transparent;
+      animation: embedSpin 0.7s linear infinite;
+      pointer-events: none;
+    }
+
     .response-container {
       width: 100%;
-      margin-top: 2px;
+      margin-top: 0;
       display: none;
-      padding: 0 12px 10px;
       box-sizing: border-box;
+      grid-column: 2;
+      grid-row: 2;
     }
 
     .response-frame {
       width: 100%;
       min-height: 60px;
-      padding: 8px 10px;
+      padding: 6px 10px;
       gap: 10px;
       border-radius: 18px;
       display: flex;
@@ -181,6 +236,15 @@
       }
     }
 
+    @keyframes embedSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .embed-footnote {
       margin-top: 8px;
       color: var(--gray-500);
@@ -192,6 +256,10 @@
       .embed-shell {
         padding: 8px;
         gap: 8px;
+      }
+
+      .search-input-wrapper {
+        min-height: 54px;
       }
     }
   </style>
@@ -293,6 +361,7 @@
     const subtitle = params.get('subtitle') || 'Assistente de IA da Conscienciologia.';
     const placeholder = params.get('placeholder') || 'Olá Conscienciólogo! Sobre o que você gostaria de conversar?';
     const initialQuestion = params.get('question') || '';
+    const popupPath = params.get('popup') || '/index_ragbot.html';
 
     const queryInputEl = document.getElementById('queryInput');
     const askButtonEl = document.getElementById('askButton');
@@ -313,6 +382,40 @@
     });
 
     function setStatus() {}
+
+    function openConsbotPopup(query) {
+      const popupUrl = new URL(popupPath, window.location.href);
+      popupUrl.searchParams.set('question', query);
+      popupUrl.searchParams.set('source', source);
+      popupUrl.searchParams.set('api', apiBase);
+
+      const popupWidth = Math.min(Math.max(window.screen?.availWidth ? Math.round(window.screen.availWidth * 0.78) : 1100, 960), 1440);
+      const popupHeight = Math.min(Math.max(window.screen?.availHeight ? Math.round(window.screen.availHeight * 0.84) : 820, 720), 1200);
+      const popupLeft = Math.max(0, Math.round(((window.screen?.availWidth || popupWidth) - popupWidth) / 2));
+      const popupTop = Math.max(0, Math.round(((window.screen?.availHeight || popupHeight) - popupHeight) / 2));
+      const popupFeatures = [
+        'popup=yes',
+        'noopener=yes',
+        'noreferrer=yes',
+        `width=${popupWidth}`,
+        `height=${popupHeight}`,
+        `left=${popupLeft}`,
+        `top=${popupTop}`,
+        'resizable=yes',
+        'scrollbars=yes'
+      ].join(',');
+
+      const popupWindow = window.open(popupUrl.toString(), 'consbotPopup', popupFeatures);
+      if (!popupWindow) {
+        window.location.href = popupUrl.toString();
+        return false;
+      }
+
+      try {
+        popupWindow.focus();
+      } catch {}
+      return true;
+    }
 
     function renderMarkdown(text) {
       const rawHtml = marked.parse(text || '', { breaks: true });
@@ -340,47 +443,14 @@
 
       askButtonEl.disabled = true;
       askButtonEl.classList.add('ragbot-loading');
-      resetAnswerStyle();
-      setStatus('Consultando o ConsBOT...');
-      responseFrameEl.parentElement.style.display = 'block';
-      responseFrameEl.classList.add('is-empty');
-      answerBoxEl.innerHTML = `
-        <div class="response-loading" aria-label="">
-          <span class="response-loading-dot"></span>
-          <span class="response-loading-dot"></span>
-          <span class="response-loading-dot"></span>
-          <span class="response-loading-text"></span>
-        </div>
-      `;
+      setStatus('Abrindo o ConsBOT...');
 
       try {
-        const response = await fetch(`${apiBase}/llm_query`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query,
-            model: 'gpt-5.4-mini',
-            temperature: 0.3,
-            llm_max_results: 3,
-            max_output_tokens: 1000,
-            vector_store_names: [source],
-            instructions: DEFAULT_INSTRUCTIONS,
-            reasoning_effort: 'none',
-            verbosity: 'low',
-            use_session: true
-          })
-        });
-
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(data.error || `HTTP ${response.status}`);
-        }
-
-        setAnswer(data.text || 'Sem resposta retornada.', false);
-        setStatus('Consulta concluída.');
+        openConsbotPopup(query);
+        setStatus('ConsBOT aberto.');
       } catch (error) {
-        setAnswer(`Erro na consulta: ${error.message || 'falha inesperada.'}`, true);
-        setStatus('Falha ao consultar o ConsBOT.');
+        setAnswer(`Erro ao abrir o ConsBOT: ${error.message || 'falha inesperada.'}`, true);
+        setStatus('Falha ao abrir o ConsBOT.');
       } finally {
         askButtonEl.disabled = false;
         askButtonEl.classList.remove('ragbot-loading');
