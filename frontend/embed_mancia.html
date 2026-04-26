@@ -110,7 +110,7 @@
       font-style: italic;
     }
 
-    .action-container {
+    .embed-mancia-action {
       flex: 0 0 auto;
       display: inline-flex;
       flex-direction: row;
@@ -122,7 +122,7 @@
       padding: 0;
     }
 
-    .lo-badge {
+    .embed-mancia-lo-badge {
       width: 85px;
       height: 85px;
       display: inline-flex;
@@ -133,38 +133,48 @@
       background: transparent;
     }
 
-    .lo-badge img {
+    .embed-mancia-lo-badge img {
       width: 85%;
       height: 85%;
       object-fit: contain;
       display: block;
     }
 
-    .pensata-button {
+    .embed-mancia-button {
       display: inline-flex !important;
       flex-direction: row;
       align-items: center;
       justify-content: center;
       position: relative;
       margin: 0 !important;
+      background: var(--apps-primary) !important;
+      color: var(--white) !important;
+      border: none !important;
+      box-shadow: var(--shadow-sm);
       padding: 12px 18px;
       font-size: 0.96rem;
+      font-weight: 600;
       border-radius: 18px;
       gap: 10px;
       white-space: nowrap;
     }
 
-    .pensata-button i {
-      display: block;
-      line-height: 1;
+    .embed-mancia-button:hover:not(:disabled) {
+      background: var(--apps-secondary) !important;
     }
 
-    .pensata-button.mancia-loading i,
-    .pensata-button.mancia-loading span {
+    .embed-mancia-button i {
+      display: block;
+      line-height: 1;
+      color: inherit;
+    }
+
+    .embed-mancia-button.mancia-loading i,
+    .embed-mancia-button.mancia-loading span {
       opacity: 0;
     }
 
-    .pensata-button.mancia-loading::after {
+    .embed-mancia-button.mancia-loading::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -219,13 +229,13 @@
       </div>
     </div>
 
-    <div class="action-container">
-     <!--  <div class="lo-badge" aria-hidden="true">
+    <div class="embed-mancia-action">
+     <!--  <div class="embed-mancia-lo-badge" aria-hidden="true">
         <img src="/public/LO.png" alt="">
       </div> -->
-      <button id="drawButton" class="pensata-button" type="button">
+      <button id="drawButton" class="embed-mancia-button" type="button">
         <i class="fas fa-book-open"></i>
-        <span>Pensata</span>
+        <span>Ortopensata</span>
       </button>
     </div>
   </div>
