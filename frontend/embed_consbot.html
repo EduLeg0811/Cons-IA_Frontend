@@ -389,6 +389,18 @@
 
     function setStatus() {}
 
+    function openInNewTabSilently(url) {
+      const tempLink = document.createElement('a');
+      tempLink.href = url;
+      tempLink.target = '_blank';
+      tempLink.rel = 'noopener noreferrer';
+      tempLink.style.display = 'none';
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      tempLink.remove();
+      return true;
+    }
+
     function openConsbotPopup(query) {
       const popupUrl = new URL(popupPath, window.location.href);
       popupUrl.searchParams.set('question', query);
@@ -413,14 +425,7 @@
 
       const popupWindow = window.open(popupUrl.toString(), 'consbotPopup', popupFeatures);
       if (!popupWindow) {
-        const tabWindow = window.open(popupUrl.toString(), '_blank', 'noopener,noreferrer');
-        if (!tabWindow) {
-          return false;
-        }
-        try {
-          tabWindow.focus();
-        } catch {}
-        return true;
+        return openInNewTabSilently(popupUrl.toString());
       }
 
       try {
