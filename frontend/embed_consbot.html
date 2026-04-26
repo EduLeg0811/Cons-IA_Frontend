@@ -200,7 +200,7 @@
   <div class="embed-shell">
     <div class="embed-brand">
       <h1 class="embed-title" id="title">ConsBOT</h1>
-      <a class="embed-header-icon" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
+      <a class="embed-header-icon" id="brandLink" href="https://cons-ia.org" target="_blank" rel="noopener noreferrer" aria-label="Abrir cons-ia.org">
         <img src="/icon.png" alt="Cons-IA">
       </a>
     </div>
@@ -300,11 +300,17 @@
     const responseFrameEl = document.getElementById('responseFrame');
 
     const titleEl = document.getElementById('title');
+    const brandLinkEl = document.getElementById('brandLink');
 
     document.title = title;
     titleEl.textContent = title;
     queryInputEl.placeholder = placeholder;
     queryInputEl.value = initialQuestion;
+
+    brandLinkEl.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.open(brandLinkEl.href, '_blank', 'noopener,noreferrer');
+    });
 
     function setStatus() {}
 
