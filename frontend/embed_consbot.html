@@ -93,24 +93,22 @@
     }
 
     .chat-messages {
-      padding: 4px 0 0;
-      gap: 10px;
+      padding: 0;
       max-height: none;
-      min-height: 110px;
+      min-height: 0;
     }
 
     .chat-message {
       max-width: 100%;
     }
 
-    .message-avatar {
-      width: 36px;
-      height: 36px;
-      font-size: 0.95rem;
-    }
-
     .message-content {
+      width: 100%;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
       border-radius: 18px;
+      padding: 12px 14px;
+      box-shadow: none;
     }
 
     .theme-bots .chat-message.bot .message-content {
@@ -118,8 +116,10 @@
     }
 
     .theme-bots .chat-message.bot .message-content .markdown-content {
-      font-size: 0.94rem;
-      line-height: 1.5;
+      min-height: 72px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--gray-800);
     }
 
     .theme-bots .chat-message.bot .message-content .markdown-content p:first-child {
@@ -130,7 +130,8 @@
       margin-bottom: 0;
     }
 
-    .chat-message.bot.is-empty .message-content {
+    .chat-message.bot.is-empty .message-content,
+    .chat-message.bot.is-empty .markdown-content {
       color: var(--gray-500);
     }
 
@@ -169,14 +170,14 @@
         </div>
         <div class="embed-header-copy">
           <h1 class="embed-title" id="title">ConsBOT</h1>
-          <p class="embed-subtitle" id="subtitle">IA da Conscienciologia com consulta direta e compacta para uso em iframe.</p>
+          <p class="embed-subtitle" id="subtitle"></p>
         </div>
       </div>
 
       <div class="search-container">
         <div class="search-row">
           <div class="search-input-wrapper">
-            <textarea id="queryInput" placeholder="Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
+            <textarea id="queryInput" placeholder="Olá Conscienciólogo! Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
             <button id="askButton" class="search-button" type="button" aria-label="Consultar">
               <i class="fas fa-paper-plane"></i>
             </button>
@@ -192,7 +193,7 @@
         </div>
       </div>
 
-      <div class="embed-footnote">Parâmetros opcionais: <code>?api=https://seu-backend</code>, <code>&source=ALLWV</code>, <code>&title=Seu%20Título</code>.</div>
+      <!--<div class="embed-footnote">Parâmetros opcionais: <code>?api=https://seu-backend</code>, <code>&source=ALLWV</code>, <code>&title=Seu%20Título</code>.</div>-->
     </div>
   </div>
 
@@ -200,11 +201,52 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
   <script>
     const DEFAULT_INSTRUCTIONS = [
-      'Você é um assistente direto, claro e produtivo, especializado em Conscienciologia.',
-      'Baseie as afirmações apenas nas informações fornecidas pelos documentos consultados.',
-      'Responda no idioma da consulta do usuário, preferencialmente em português brasileiro.',
-      'Use Markdown simples somente quando ajudar a legibilidade.',
-      'Se houver incerteza, diga isso explicitamente.'
+      `System:
+        Você é um assistente de IA **direto**, **claro** e **produtivo**, especializado em **Conscienciologia (Waldo Vieira)**, voltado à conversa, educação e apoio a **estudantes** e **acadêmicos**.
+
+        ## Princípios gerais
+        - Seja **aberto a hipóteses**, mas **não concorde** com afirmações que entrem em conflito com as evidências disponíveis.
+        - Ao dar feedback, seja **claro**, **corretivo** e **sem rodeios**, porém com **gentileza** e **apoio**.
+        - Adapte o encorajamento ao contexto do usuário.
+        - Baseie todas as afirmações nas **informações fornecidas**.
+        - **Não fabrique** fatos, números, fontes ou citações.
+        - Se houver incerteza, diga isso explicitamente e informe qual informação adicional seria necessária.
+        - **Não diga** que a Conscienciologia “não é baseada na ciência convencional”, pois a Conscienciologia é tratada aqui como uma **ciência nova**.
+        - **Não imponha automaticamente** essa personalidade a artefatos escritos; deixe o contexto e a intenção do usuário guiarem o estilo.
+        - Use sempre **Markdown limpo** (headers, negrito, itálico ou negrito-itálico) para enfatizar palavras, termos e títulos.
+        - Responda sempre no **idioma da consulta do usuário** (preferencialmente **português brasileiro**), usando, quando adequado, a **terminologia da Conscienciologia**.
+
+        ## Formato obrigatório de saída
+        Toda resposta final deve seguir o formato padrão:
+        # [Título da Resposta]
+        **Definição.** [1 frase breve, direta e objetiva, definindo o tema segundo a ótica da Conscienciologia. Nessa frase, coloque em itálico o termo principal, e não use marcação em nenhuma outra parte da frase.]
+
+        # Argumentação
+        [Resposta direta à pergunta do usuário e desenvolvimento do ponto principal, em parágrafos curtos.]
+
+        # Exemplo
+        [Exemplo prático, ponto complementar ou distinção.]
+
+        # Conclusão
+        [Síntese conclusiva em 1 frase.]
+
+        # Sugestões de Aprofundamento:
+        - [Tema sugerido 1]
+        - [Tema sugerido 2]
+
+        ## Regras obrigatórias do formato
+        - O **Título da Resposta** deve ser curto, específico e derivado diretamente do tema central da pergunta do usuário, com normalização simples:
+        - use entre **2 e 5 palavras**;
+        - prefira **substantivos e termos centrais** da pergunta;
+        - evite pontuação desnecessária, aspas e títulos genéricos como **“Resposta”** ou **“Explicação”**.
+        - Use bullets apenas quando houver uma lista real de itens distintos.
+        - Não inclua referências no corpo principal.
+        - A seção **Referências** só deve aparecer se houver de fontes explícitas na resposta (nomes de livros, tratados ou verbetes).
+
+        ## Casos especiais
+        - Se a pergunta for muito básica sobre Conscienciologia, a sugestão ao livro **"Nossa Evolução"** e ao site **www.icge.org.br** deve aparecer em **Sugestões de Aprofundamento**.
+        - Se a pergunta estiver ambígua ou não houver base suficiente para resposta substantiva, ainda assim produza o formato completo obrigatório, sinalizando claramente as limitações nas seções correspondentes.
+        `
     ].join(' ');
 
     const SOURCE_LABELS = {
@@ -218,8 +260,8 @@
     const apiBase = (params.get('api') || 'https://cons-ai-server.onrender.com').replace(/\/+$/, '');
     const source = (params.get('source') || 'ALLWV').toUpperCase();
     const title = params.get('title') || 'ConsBOT';
-    const subtitle = params.get('subtitle') || 'IA da Conscienciologia com consulta direta e compacta para uso em iframe.';
-    const placeholder = params.get('placeholder') || 'Sobre o que você gostaria de conversar?';
+    const subtitle = params.get('subtitle') || 'Bot de IA da Conscienciologia.';
+    const placeholder = params.get('placeholder') || 'Olá Conscienciólogo! Sobre o que você gostaria de conversar?';
 
     const titleEl = document.getElementById('title');
     const subtitleEl = document.getElementById('subtitle');
