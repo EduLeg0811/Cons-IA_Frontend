@@ -660,6 +660,45 @@
         });
       })();
 
+      (function setupExternalLinkLogging() {
+        const links = [
+          { selector: 'a[href="https://lexicons.streamlit.app/"]', module: 'lexicons', label: 'LexiCons' },
+          { selector: 'a[href^="https://notebooklm.google.com/"][href*="artifactId=8f6fc286"]', module: 'quiz_conscienciologico', label: 'Quiz Conscienciologico' },
+          { selector: 'a[href^="https://notebooklm.google.com/"][href*="artifactId=2da2f57f"]', module: 'flashcards_temas', label: 'Flashcards de Temas' },
+          { selector: 'a[href^="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt"]', module: 'consgpt', label: 'ConsGPT' },
+          { selector: 'a[href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67"]', module: 'conslm', label: 'ConsLM' },
+          { selector: 'a[href="https://www.icge.org.br/"]', module: 'icge', label: 'ICGE' },
+          { selector: 'a[href="https://enciclopediadaconscienciologia.org/"]', module: 'enciclopedia_conscienciologia', label: 'Enciclopedia da Conscienciologia' },
+          { selector: 'a[href="https://periodicos.conscienciologia.org.br/"]', module: 'portal_periodicos', label: 'Portal de Periodicos' },
+          { selector: 'a[href^="https://drive.google.com/drive/folders/1Mp6Zfhq"]', module: 'livros_pdf', label: 'Livros em PDF' },
+          { selector: 'a[href="mailto:legadologia@gmail.com"]', module: 'footer_email', label: 'Email do diretor' },
+        ];
+
+        links.forEach(({ selector, module, label }) => {
+          const link = document.querySelector(selector);
+          if (!link) return;
+
+          link.addEventListener('click', () => {
+            try {
+              if (!window.logFeatureAccess) return;
+              const href = link.getAttribute('href') || '';
+              window.logFeatureAccess({
+                module,
+                action: 'click',
+                label,
+                value: href,
+                meta: {
+                  href,
+                  target: link.getAttribute('target') || '',
+                }
+              });
+            } catch (error) {
+              console.error('Error logging external link click:', error);
+            }
+          });
+        });
+      })();
+
 
 
             // Info toggle (expand/collapse badge descriptions)
