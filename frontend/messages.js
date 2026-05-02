@@ -131,6 +131,11 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
+  // Tool: Lexicons
+  'Lexicons': {
+    short: '<em>Dicionário Analógico e de Sinônimos</em>',
+  },
+
   //Tool: Quiz Conscienciológico
   'Quiz Conscienciológico': {
     short: '<em>Quiz de Perguntas & Respostas</em>',
@@ -228,6 +233,7 @@ const TOOL_ALIASES = {
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
   'Flashcards de Temas': 'Flashcard de Temas',
   'Flashcard de Temas': 'Flashcard de Temas',
+  'Lexicons': 'Lexicons',
   'Bibliomancia Digital': 'Bibliomancia Digital',
   'Bibliografia': 'BiblioWV',
 };
