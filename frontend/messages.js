@@ -18,7 +18,7 @@ const PANEL_DESCRIPTIONS = {
 
   'Apps IA': [
     '<span class="panel-desc-lead">Aplicativos de IA para Pesquisa</span>',
-    
+
   ].join('\n'),
 
   'Links Externos': '<span class="panel-desc-lead">Links e Recursos Úteis</span>',
@@ -64,7 +64,7 @@ const TOOL_MESSAGES = {
     extra: [
       '<br>',
       'O <strong>ConsBOT</strong> é um projeto experimental de Chatbot RAG da Conscienciologia. ',
-      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>', 
+      'Possui informações dos tratados e livros do professor Waldo, além de anotações selecionadas das Minitertúlias.<br>',
       '<strong>Dicas:</strong><br>',
       '<strong>1.</strong> Experimente pedir para ele fazer <em>interrelações</em> entre conceitos e ideias distintas.<br>',
       '<strong>2.</strong> Converse sobre temas avançados da Conscienciologia.<br>',
@@ -131,8 +131,8 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
-  // Tool: Lexicons
-  'Lexicons': {
+  // Tool: LexiCons
+  'LexiCons': {
     short: '<em>Dicionário Analógico e de Sinônimos</em>',
   },
 
@@ -176,7 +176,7 @@ const TOOL_MESSAGES = {
     ].join('\n')
   },
 
-  
+
   // Tool: ICGE (external)
     'ICGE': {
       short: '<em>Site do ICGE</em>',
@@ -192,8 +192,8 @@ const TOOL_MESSAGES = {
       'Site da Encyclossapiens.',
     ].join('\n'),
   },
-/* 
-  
+/*
+
   // Tool: Portal da Conscienciologia (external)
   'Portal da Conscienciologia': {
     short: '<em>Site central da Conscienciologia</em>',
@@ -233,7 +233,7 @@ const TOOL_ALIASES = {
   'Quiz Conscienciológico': 'Quiz Conscienciológico',
   'Flashcards de Temas': 'Flashcard de Temas',
   'Flashcard de Temas': 'Flashcard de Temas',
-  'Lexicons': 'Lexicons',
+  'LexiCons': 'LexiCons',
   'Bibliomancia Digital': 'Bibliomancia Digital',
   'Bibliografia': 'BiblioWV',
 };
@@ -242,7 +242,7 @@ const TOOL_ALIASES = {
 // Finds panels and tool cards and injects the corresponding text.
 function applyMessages() {
   try {
-   
+
     document.querySelectorAll('.tool-panel .panel-header .panel-info').forEach(info => {
       const p = info.querySelector('p');
       if (!p) return;
@@ -306,8 +306,8 @@ function applyMessages() {
 
 
 
-      } catch (e) { 
-        console.error('Error occurred while processing href:', e); 
+      } catch (e) {
+        console.error('Error occurred while processing href:', e);
       }
 
       let msg = TOOL_MESSAGES[canonical];
@@ -339,8 +339,8 @@ function applyMessages() {
           msg = TOOL_MESSAGES['Caderno de Estudos'] || msg;
         }
 
-      } catch (e) { 
-        console.error('Error occurred while processing href2:', e); 
+      } catch (e) {
+        console.error('Error occurred while processing href2:', e);
       }
 
       if (!msg) return;
@@ -370,7 +370,7 @@ function applyMessages() {
     });
 
 
-    
+
   } catch (e) {
     console.warn('messages.js: failed to apply messages', e);
   }
