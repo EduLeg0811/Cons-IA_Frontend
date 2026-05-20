@@ -282,7 +282,7 @@
     <div class="search-container">
       <div class="search-row">
         <div class="search-input-wrapper">
-          <textarea id="queryInput" placeholder="Olá Conscienciólogo! Sobre o que você gostaria de conversar?" class="search-input" rows="1"></textarea>
+          <textarea id="queryInput" placeholder="Olá Conscienciólogo!" class="search-input" rows="1"></textarea>
           <button id="askButton" class="search-button" type="button" aria-label="Consultar">
             <i class="fas fa-paper-plane"></i>
           </button>
@@ -365,7 +365,7 @@
     const source = (params.get('source') || 'ALLWV').toUpperCase();
     const title = params.get('title') || 'ConsBOT';
     const subtitle = params.get('subtitle') || 'Assistente de IA da Conscienciologia.';
-    const placeholder = params.get('placeholder') || 'Olá Conscienciólogo! Sobre o que você gostaria de conversar?';
+    const placeholder = params.get('placeholder') || 'Olá Conscienciólogo!';
     const initialQuestion = params.get('question') || '';
     const popupPath = params.get('popup') || '/index_ragbot.html';
 

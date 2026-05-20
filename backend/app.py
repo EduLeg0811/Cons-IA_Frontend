@@ -92,6 +92,7 @@ MEMORY_TRACE_ENABLED = os.getenv("MEMORY_TRACE_ENABLED", "1") == "1"
 MEMORY_TRACE_HEADERS = os.getenv("MEMORY_TRACE_HEADERS", "0") == "1"
 MEMORY_TRACE_ONLY_API = os.getenv("MEMORY_TRACE_ONLY_API", "1") == "1"
 MEMORY_TRACE_THRESHOLD_MB = float(os.getenv("MEMORY_TRACE_THRESHOLD_MB", "0") or 0)
+MEMORY_TRACE_MIN_RSS_MB = float(os.getenv("MEMORY_TRACE_MIN_RSS_MB", "512") or 512)
 PROCESS = psutil.Process(os.getpid())
 
 
@@ -248,9 +249,12 @@ def end_request_memory_trace(response):
     delta_mb = round(rss_after - rss_before, 1) if rss_before is not None and rss_after >= 0 else None
     runtime = _build_runtime_snapshot()
 
-    if delta_mb is None or abs(delta_mb) >= MEMORY_TRACE_THRESHOLD_MB:
+    if rss_after >= MEMORY_TRACE_MIN_RSS_MB and (
+        delta_mb is None or abs(delta_mb) >= MEMORY_TRACE_THRESHOLD_MB
+    ):
         logger.info(
-            "MEMTRACE path=%s method=%s status=%s dur_ms=%s rss_before_mb=%s rss_after_mb=%s rss_delta_mb=%s conv_count=%s ip_count=%s geoip_count=%s gc=%s",
+            "MEMTRACE limit_mb=%s path=%s method=%s status=%s dur_ms=%s rss_before_mb=%s rss_after_mb=%s rss_delta_mb=%s conv_count=%s ip_count=%s geoip_count=%s gc=%s",
+            MEMORY_TRACE_MIN_RSS_MB,
             request.path,
             request.method,
             response.status_code,
