@@ -39,7 +39,6 @@ import unicodedata
 import pandas as pd
 
 from utils.config import (
-    FILES_SEARCH_DIR,
     FILES_SEARCH_PREPROCESSED_DIR,
     MAX_OVERALL_SEARCH_RESULTS,
 )
@@ -85,20 +84,19 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
     if not source:
         raise ValueError("Parâmetro 'source' está vazio.")
 
-    files_dir = Path(FILES_SEARCH_DIR)
+    files_dir = Path(FILES_SEARCH_PREPROCESSED_DIR)
 
     # -----------------------------------------------------------------------------
-    # Helper: retorna Path do arquivo por prioridade XLSX > MD > TXT
+    # Helper: retorna Path do arquivo preprocessado (.ndjson) ou texto (.md/.txt)
     # -----------------------------------------------------------------------------
     def get_file_for_book(book: str) -> Optional[Path]:
         candidates = [
-            files_dir / f"{book}.xlsx",
+            files_dir / f"{book}.ndjson",
             files_dir / f"{book}.md",
             files_dir / f"{book}.txt",
         ]
 
         logger.info(f"[lexical_search_in_files] Livro: {book}")
-        #logger.info(f"[lexical_search_in_files] Candidates: {candidates}")
         for c in candidates:
             if c.exists():
                 return c
@@ -142,13 +140,10 @@ def lexical_search_in_files(search_term: str, source: List[str]) -> List[Dict[st
         ext = path.suffix.lower()
 
         try:
-            if ext == ".xlsx":
-                matches = search_excel_file(path, search_term)
-
-                #logger.info(f"[lexical_search_in_files] search_term: {search_term}")
-                #logger.info(f"[lexical_search_in_files] matches: {matches}")
-                
-
+            if ext == ".ndjson":
+                matches = search_excel_rows_streaming(
+                    iter_preprocessed_excel_rows(path), search_term
+                )
                 for m in matches:
                     results.append(SearchResult(
                         source=book,

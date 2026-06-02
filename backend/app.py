@@ -37,7 +37,7 @@ from modules.mancia.mancia_utils import get_random_paragraph
 from modules.bibliography.biblioRefW import build_biblio_wv, get_books_wv
 from modules.bibliography.biblioRefVerbete import build_ref_verbete
 from utils.config import (
-    FILES_SEARCH_DIR,
+    FILES_SEARCH_PREPROCESSED_DIR,
     MODEL_LLM,
 )
 from utils.docx_export import build_docx
@@ -225,7 +225,7 @@ logger.info(
     "render" if IS_RENDER else "local",
     backend_url,
     CORS_ALLOWED_ORIGINS,
-    FILES_SEARCH_DIR,
+    FILES_SEARCH_PREPROCESSED_DIR,
 )
 
 
