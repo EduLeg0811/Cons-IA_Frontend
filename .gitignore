@@ -1,9 +1,2 @@
-# Ignorar a pasta de índices FAISS
-/backend/faiss_index/
-
-# Ignorar a pasta de arquivos
-#/backend/files/
-
+node_modules/
 .env
-
-#/backend/
