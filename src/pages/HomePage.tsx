@@ -1,0 +1,306 @@
+import { useState } from 'react';
+import { ToolCard } from '../components/ToolCard';
+import { useTheme } from '../lib/theme';
+import { logFeatureAccess } from '../lib/config';
+
+const PANEL_ACCENTS: Record<string, string> = {
+  apps: 'border-t-apps-primary',
+  biblio: 'border-t-biblio-primary',
+  bots: 'border-t-bots-primary',
+  search: 'border-t-search-primary',
+  utils: 'border-t-utils-primary',
+};
+
+function Panel({ accent, title, subtitle, children }: { accent: string; title: string; subtitle: string; children: React.ReactNode }) {
+  return (
+    <div className={`rounded-2xl border-t-4 border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 ${PANEL_ACCENTS[accent]}`}>
+      <div className="mb-3 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h2>
+        <em className="text-sm text-gray-500 dark:text-gray-400">{subtitle}</em>
+      </div>
+      <div className="grid gap-3">{children}</div>
+    </div>
+  );
+}
+
+export function HomePage() {
+  const [theme, toggleTheme] = useTheme();
+  const [showInfo, setShowInfo] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackStatus, setFeedbackStatus] = useState('');
+
+  const logClick = (module: string, label: string, href: string) => {
+    try {
+      logFeatureAccess({ module, action: 'click', label, value: href, meta: { href } });
+    } catch {
+      // ignore logging errors
+    }
+  };
+
+  const sendFeedback = () => {
+    const msg = feedbackText.trim();
+    if (!msg) {
+      setFeedbackStatus('Digite uma mensagem.');
+      return;
+    }
+    try {
+      logFeatureAccess({ module: 'feedback', action: 'send', label: 'Feedback enviado', value: msg });
+      setFeedbackStatus('Feedback enviado! Agradecemos sua mensagem.');
+    } catch {
+      setFeedbackStatus('Falha ao enviar. Tente novamente.');
+    }
+    setTimeout(() => setFeedbackOpen(false), 1000);
+  };
+
+  return (
+    <>
+      <nav className="fixed inset-x-0 top-0 z-50 h-[70px] border-b border-gray-200 bg-white/95 backdrop-blur-xl dark:border-gray-700 dark:bg-gray-900/95">
+        <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between px-6">
+          <button
+            type="button"
+            title="Mostrar/ocultar descrições"
+            onClick={() => setShowInfo((v) => !v)}
+            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            <img src="/icon.png" alt="Books in the Parabrain" className="h-8 w-8" />
+          </button>
+
+          <div className="flex flex-1 flex-col items-center justify-center text-center">
+            <div className="text-lg font-bold text-gray-900 dark:text-gray-100">Cons-IA</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">Toolbox de IA da Conscienciologia</div>
+          </div>
+
+          <button
+            type="button"
+            title="Toggle Theme"
+            onClick={toggleTheme}
+            className="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+          >
+            <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} />
+          </button>
+        </div>
+      </nav>
+
+      <main className="min-h-[calc(100vh-70px)] bg-gray-100 px-6 py-12 pt-[94px] dark:bg-gray-950">
+        <div className="mx-auto max-w-[1400px]">
+          <a
+            href="https://cons-ia.org/new.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => logClick('homepage_banner', 'New', 'https://cons-ia.org/new.html')}
+            className="mb-8 flex items-center justify-between rounded-2xl bg-gradient-to-r from-apps-primary to-apps-secondary px-6 py-5 text-white shadow-lg transition-transform hover:-translate-y-0.5"
+          >
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-wide text-white/80">Nova experiência</span>
+              <h1 className="text-lg font-bold">Experimente a nova página de abertura do Cons-IA</h1>
+              <p className="text-sm text-white/80">https://cons-ia.org/new.html</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <span>Abrir</span>
+              <i className="fas fa-arrow-up-right-from-square" />
+            </div>
+          </a>
+
+          <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(600px, 1fr))' }}>
+            <Panel accent="apps" title="Apps IA" subtitle="Aplicativos Diversos">
+              <ToolCard
+                href="index_mancia.html"
+                title="Bibliomancia Digital"
+                description={<em>Sorteio de ortopensatas do Léxico</em>}
+                icon={<i className="fas fa-book-open" />}
+                iconVariant="mancia"
+              />
+              <ToolCard
+                href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=8f6fc286-021f-4184-b572-7f17c8561539"
+                title="Quiz Conscienciológico"
+                description={<em>Quiz de Perguntas & Respostas</em>}
+                icon={<i className="fas fa-graduation-cap" />}
+                iconVariant="mancia"
+                external
+                onClick={() => logClick('quiz_conscienciologico', 'Quiz Conscienciologico', '#')}
+              />
+              <ToolCard
+                href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=2da2f57f-996c-4efd-b24c-c2f49ba8b452"
+                title="Flashcards de Temas"
+                description={<em>Temas da Conscienciologia em cards</em>}
+                icon={<i className="fas fa-layer-group" />}
+                iconVariant="mancia"
+                external
+                onClick={() => logClick('flashcards_temas', 'Flashcards de Temas', '#')}
+              />
+            </Panel>
+
+            <Panel accent="biblio" title="Bibliografia IA" subtitle="Referências de Livros, Artigos e Verbetes">
+              <ToolCard
+                href="index_biblio_wv.html"
+                title="Bibliografia de Livros"
+                description={<em>Bibliografia de livros de Waldo Vieira</em>}
+                icon={<i className="fas fa-list" />}
+                iconVariant="biblio"
+              />
+              <ToolCard
+                href="index_biblio_verbete.html"
+                title="Bibliografia de Verbetes"
+                description={<em>Listagem e bibliografia de verbetes</em>}
+                icon={<i className="fas fa-book" />}
+                iconVariant="biblio"
+              />
+            </Panel>
+
+            <Panel accent="bots" title="Bots IA" subtitle="Assistentes de Conversação">
+              <ToolCard
+                href="https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt"
+                title="ConsGPT"
+                description={<em>ChatGPT da OpenAI</em>}
+                icon={<i className="fas fa-comments" />}
+                iconVariant="bots"
+                external
+                onClick={() => logClick('consgpt', 'ConsGPT', '#')}
+              />
+              <ToolCard
+                href="https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67"
+                title="ConsLM"
+                description={<em>NotebookLM da Google</em>}
+                icon={<i className="fa-brands fa-google" />}
+                iconVariant="bots"
+                external
+                onClick={() => logClick('conslm', 'ConsLM', '#')}
+              />
+              <ToolCard
+                href="index_ragbot.html"
+                title="ConsBOT"
+                description={<em>Chatbot da Conscienciologia</em>}
+                icon={<i className="fa-solid fa-graduation-cap" />}
+                iconVariant="bots"
+              />
+            </Panel>
+
+            <Panel accent="search" title="Busca IA" subtitle="Busca de Palavras em Livros">
+              <ToolCard
+                href="index_search_book.html"
+                title="Livros & Tratados"
+                description="Busca de palavras em livros"
+                icon={<i className="fas fa-book" />}
+                iconVariant="lexical"
+              />
+              <ToolCard
+                href="index_search_verb.html"
+                title="Definologia de Verbetes"
+                description="Busca na Definologia dos verbetes"
+                icon={<i className="fas fa-book" />}
+                iconVariant="lexical"
+              />
+              <ToolCard
+                href="index_search_ccg.html"
+                title="Questões do Conscienciograma"
+                description="Busca no Conscienciograma"
+                icon={<i className="fas fa-book" />}
+                iconVariant="lexical"
+              />
+            </Panel>
+
+            <Panel accent="utils" title="Links Externos" subtitle="Páginas Úteis da Conscienciologia">
+              <ToolCard
+                href="https://www.icge.org.br/"
+                title="ICGE"
+                description={<em>Site do ICGE</em>}
+                icon={<i className="fas fa-globe" />}
+                iconVariant="encyclopedia"
+                external
+                onClick={() => logClick('icge', 'ICGE', 'https://www.icge.org.br/')}
+              />
+              <ToolCard
+                href="https://enciclopediadaconscienciologia.org/"
+                title="Enciclopédia da Conscienciologia"
+                description={<em>Download de verbetes</em>}
+                icon={<i className="fas fa-globe" />}
+                iconVariant="encyclopedia"
+                external
+                onClick={() => logClick('enciclopedia_conscienciologia', 'Enciclopedia da Conscienciologia', '#')}
+              />
+              <ToolCard
+                href="https://periodicos.conscienciologia.org.br/"
+                title="Portal de Periódicos"
+                description={<em>Portal de periódicos da Conscienciologia</em>}
+                icon={<i className="fas fa-globe" />}
+                iconVariant="encyclopedia"
+                external
+                onClick={() => logClick('portal_periodicos', 'Portal de Periodicos', '#')}
+              />
+              <ToolCard
+                href="https://drive.google.com/drive/folders/1Mp6Zfhq-peIYlo9Js0wYRX2DnRjFYyUj?usp=sharing"
+                title="Livros em PDF"
+                description={<em>Acervo de obras de Waldo Vieira</em>}
+                icon={<i className="fas fa-globe" />}
+                iconVariant="encyclopedia"
+                external
+                onClick={() => logClick('livros_pdf', 'Livros em PDF', '#')}
+              />
+            </Panel>
+          </div>
+        </div>
+
+        <footer className="mx-auto mt-16 max-w-[1400px] border-t border-gray-200 px-6 py-8 dark:border-gray-700">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setFeedbackOpen(true)}
+              className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-900 hover:bg-emerald-200"
+            >
+              Envie seu feedback
+            </button>
+            <div className="text-sm text-gray-500 dark:text-gray-400">©2026 Cons-IA.org</div>
+            <a
+              href="mailto:legadologia@gmail.com"
+              onClick={() => logClick('footer_email', 'Email do diretor', 'mailto:legadologia@gmail.com')}
+              className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"
+            >
+              <span>Fale com o Diretor:</span>
+              <i className="fas fa-envelope" />
+              <em>transmentor@interludium.ccce</em>
+            </a>
+          </div>
+        </footer>
+      </main>
+
+      {feedbackOpen && (
+        <div
+          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setFeedbackOpen(false);
+          }}
+        >
+          <div className="w-[min(420px,92vw)] rounded-xl bg-white p-6 shadow-2xl dark:bg-gray-800">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Enviar Feedback</h3>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Sua mensagem será enviada aos desenvolvedores.</p>
+            <textarea
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              rows={4}
+              placeholder="Escreva aqui sua mensagem..."
+              className="mt-3 w-full resize-none rounded-lg border border-gray-200 p-3 text-sm focus:border-apps-primary focus:outline-none dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100"
+            />
+            <div className="mt-3 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setFeedbackOpen(false)}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-200"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={sendFeedback}
+                className="rounded-lg bg-apps-primary px-4 py-2 text-sm font-medium text-white hover:bg-apps-secondary"
+              >
+                Enviar
+              </button>
+            </div>
+            {feedbackStatus && <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">{feedbackStatus}</div>}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

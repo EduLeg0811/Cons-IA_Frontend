@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -11,33 +12,11 @@ const htmlEntries = fs
     return entries;
   }, {});
 
-const staticFiles = [
-  'config.js',
-  'utils.js',
-  'messages.js',
-  'display.js',
-  'bridge.js',
-  'download.js',
-  'script_biblio_verbete.js',
-  'script_biblio_wv.js',
-  'script_mancia.js',
-  'script_ragbot.js',
-  'script_search_book.js',
-];
-
 function syncStaticFiles() {
   return {
     name: 'sync-static-files',
     closeBundle() {
       const outDir = path.resolve(rootDir, 'dist');
-
-      for (const file of staticFiles) {
-        const source = path.resolve(rootDir, file);
-        const target = path.resolve(outDir, file);
-
-        if (!fs.existsSync(source)) continue;
-        fs.copyFileSync(source, target);
-      }
 
       const htmlFiles = fs
         .readdirSync(outDir)
@@ -62,5 +41,5 @@ export default defineConfig({
       input: htmlEntries,
     },
   },
-  plugins: [syncStaticFiles()],
+  plugins: [react(), syncStaticFiles()],
 });
