@@ -308,6 +308,35 @@ export function RagbotPage() {
           )}
         </div>
 
+        <div className="mb-6 flex items-end gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg focus-within:border-bots-primary">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                send(input);
+              }
+            }}
+            placeholder={isEnglish ? 'Hello, Conscientiologist!' : 'Sobre o que você gostaria de conversar?'}
+            rows={1}
+            className="flex-1 resize-none bg-transparent text-base text-gray-800 placeholder:text-gray-400 focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => send(input)}
+            disabled={busy}
+            aria-label="Search"
+            className={`flex h-12 w-12 items-center justify-center rounded-xl bg-bots-primary text-white transition-colors hover:bg-bots-secondary disabled:cursor-not-allowed disabled:opacity-70 ${busy ? 'relative' : ''}`}
+          >
+            {busy ? (
+              <span className="absolute inset-[10px] animate-spin rounded-full border-2 border-white/85 border-t-transparent" />
+            ) : (
+              <i className="fas fa-paper-plane" />
+            )}
+          </button>
+        </div>
+
         {!used && (
           <div className="mb-4 rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700">
             <strong>
@@ -351,35 +380,6 @@ export function RagbotPage() {
               )}
             </div>
           )}
-        </div>
-
-        <div className="sticky bottom-4 mt-6 flex items-end gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg focus-within:border-bots-primary">
-          <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                send(input);
-              }
-            }}
-            placeholder={isEnglish ? 'Hello, Conscientiologist!' : 'Sobre o que você gostaria de conversar?'}
-            rows={1}
-            className="flex-1 resize-none bg-transparent text-base text-gray-800 placeholder:text-gray-400 focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => send(input)}
-            disabled={busy}
-            aria-label="Search"
-            className={`flex h-12 w-12 items-center justify-center rounded-xl bg-bots-primary text-white transition-colors hover:bg-bots-secondary disabled:cursor-not-allowed disabled:opacity-70 ${busy ? 'relative' : ''}`}
-          >
-            {busy ? (
-              <span className="absolute inset-[10px] animate-spin rounded-full border-2 border-white/85 border-t-transparent" />
-            ) : (
-              <i className="fas fa-paper-plane" />
-            )}
-          </button>
         </div>
       </div>
     </>

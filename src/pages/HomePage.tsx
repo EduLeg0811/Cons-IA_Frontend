@@ -102,6 +102,16 @@ export function HomePage() {
             </div>
           </a>
 
+          <div className="mb-8 -mt-4 text-center">
+            <a
+              href="gallery.html"
+              onClick={() => logClick('homepage_gallery_link', 'Versao Vitrine', 'gallery.html')}
+              className="text-sm text-gray-500 hover:text-apps-primary hover:underline dark:text-gray-400"
+            >
+              Experimente a versão em vitrine →
+            </a>
+          </div>
+
           <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(600px, 1fr))' }}>
             <Panel accent="apps" title="Apps IA" subtitle="Aplicativos Diversos">
               <ToolCard

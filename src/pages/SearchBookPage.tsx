@@ -163,7 +163,7 @@ export function SearchBookPage() {
 
       <div className="mx-auto max-w-3xl px-4 pb-16 pt-[90px]">
         <div className="relative">
-          <div className="mb-3 flex items-center justify-end gap-2">
+          <div className="mb-3 flex items-center justify-between gap-2">
             <button
               type="button"
               onClick={() => setPanelOpen((v) => !v)}
@@ -186,7 +186,7 @@ export function SearchBookPage() {
           </div>
 
           {panelOpen && (
-            <div className="absolute right-0 top-12 z-50 w-[min(420px,92vw)] rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
+            <div className="absolute left-0 top-12 z-50 w-[min(420px,92vw)] rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
               <BookPills
                 options={BOOK_OPTIONS}
                 selected={settings.books}
