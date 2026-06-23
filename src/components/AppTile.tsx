@@ -1,13 +1,14 @@
 import type { ComponentType } from 'react';
 
-type Category = 'apps' | 'biblio' | 'bots' | 'search' | 'utils';
+type Category = 'apps' | 'biblio' | 'bots' | 'search' | 'utils' | 'estudo';
 
 export const CATEGORY_COLORS: Record<Category, { primary: string; secondary: string }> = {
-  apps: { primary: '#7c3aed', secondary: '#a855f7' },
+  apps: { primary: '#ec4899', secondary: '#f472b6' },
   biblio: { primary: '#edc93a', secondary: '#f6da5b' },
   bots: { primary: '#10b981', secondary: '#34d399' },
   search: { primary: '#0ea5e9', secondary: '#38bdf8' },
   utils: { primary: '#f87171', secondary: '#fca5a5' },
+  estudo: { primary: '#7c3aed', secondary: '#a855f7' },
 };
 
 const RING_CLASSES: Record<Category, string> = {
@@ -16,6 +17,7 @@ const RING_CLASSES: Record<Category, string> = {
   bots: 'focus-visible:ring-bots-primary',
   search: 'focus-visible:ring-search-primary',
   utils: 'focus-visible:ring-utils-primary',
+  estudo: 'focus-visible:ring-estudo-primary',
 };
 
 export interface IllustrationProps {

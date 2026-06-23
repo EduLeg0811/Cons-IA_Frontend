@@ -4,7 +4,10 @@
       "Bash(node -e ' *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3004/Modules_Figures/LO.png)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3004/Modules_Figures/Books.png)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python3 -c \"from PIL import Image; print\\('ok'\\)\")",
+      "Bash(python -c \"from PIL import Image; print\\('ok'\\)\")",
+      "Bash(python -c ' *)"
     ]
   }
 }

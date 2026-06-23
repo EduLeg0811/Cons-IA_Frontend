@@ -2,12 +2,7 @@ import { useState } from 'react';
 import type { ComponentType } from 'react';
 import { AppTile, type IllustrationProps } from '../components/AppTile';
 import {
-  QuizIllustration,
-  FlashcardsIllustration,
   BiblioVerbeteIllustration,
-  ConsGptIllustration,
-  ConsLmIllustration,
-  ConsBotIllustration,
   SearchBookIllustration,
   SearchVerbIllustration,
   SearchCcgIllustration,
@@ -19,7 +14,7 @@ import {
 import { useTheme } from '../lib/theme';
 import { logFeatureAccess } from '../lib/config';
 
-type Category = 'apps' | 'biblio' | 'bots' | 'search' | 'utils';
+type Category = 'apps' | 'biblio' | 'bots' | 'search' | 'utils' | 'estudo';
 
 interface ModuleEntry {
   href: string;
@@ -36,6 +31,7 @@ const SECTION_LABEL_CLASSES: Record<Category, string> = {
   bots: 'text-bots-primary border-bots-primary',
   search: 'text-search-primary border-search-primary',
   utils: 'text-utils-primary border-utils-primary',
+  estudo: 'text-estudo-primary border-estudo-primary',
 };
 
 const SECTIONS: { category: Category; title: string; subtitle: string; modules: ModuleEntry[] }[] = [
@@ -44,26 +40,45 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
     title: 'Apps IA',
     subtitle: 'Aplicativos Diversos',
     modules: [
-      { href: 'index_mancia.html', title: 'Bibliomancia Digital', description: 'Sorteio de ortopensatas do Léxico', image: '/Modules_Figures/LO.png' },
+      {
+        href: 'index_mancia.html',
+        title: 'Bibliomancia Digital',
+        description: 'Sorteio e interpretação de ortopensatas do Léxico',
+        image: '/Modules_Figures/LO_New.png'
+      },
       {
         href: 'https://verbetograma.streamlit.app/',
         title: 'Revisão Verbetográfica',
-        description: 'Realiza auditoria nos verbetes antes da entrega',
-        image: '/Modules_Figures/Lexicons.png',
+        description: 'Auditoria nos verbetes antes da entrega',
+        image: '/Modules_Figures/Verbetogram.png',
         external: true,
       },
       {
+        href: 'https://lexicons-g86o.onrender.com',
+        title: 'Lexicons',
+        description: 'Dissecção lexicográfica',
+        image: '/Modules_Figures/Lexicons_New_noWords.png',
+        external: true,
+      },
+    ],
+  },
+  {
+    category: 'estudo',
+    title: 'Estudo IA',
+    subtitle: 'Recursos de Estudo e Memorização',
+    modules: [
+      {
         href: 'https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=8f6fc286-021f-4184-b572-7f17c8561539',
         title: 'Quiz Conscienciológico',
-        description: 'Quiz de Perguntas & Respostas',
-        illustration: QuizIllustration,
+        description: 'Teste seus conhecimentos de Conscienciologia com questões de múltipla escolha',
+        image: '/Modules_Figures/Quiz_new.png',
         external: true,
       },
       {
         href: 'https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67?artifactId=2da2f57f-996c-4efd-b24c-c2f49ba8b452',
         title: 'Flashcards de Temas',
-        description: 'Temas da Conscienciologia em cards',
-        illustration: FlashcardsIllustration,
+        description: 'Estude a Conscienciologia com flashcards de perguntas e respostas',
+        image: '/Modules_Figures/FlashCards.png',
         external: true,
       },
     ],
@@ -73,8 +88,8 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
     title: 'Bibliografia IA',
     subtitle: 'Referências de Livros, Artigos e Verbetes',
     modules: [
-      { href: 'index_biblio_wv.html', title: 'Bibliografia de Livros', description: 'Bibliografia de livros de Waldo Vieira', image: '/Modules_Figures/Books.png' },
-      { href: 'index_biblio_verbete.html', title: 'Bibliografia de Verbetes', description: 'Listagem e bibliografia de verbetes', illustration: BiblioVerbeteIllustration },
+      { href: 'index_biblio_wv.html', title: 'Bibliografia de Livros', description: 'Bibliografia de livros e tratados de Waldo Vieira', image: '/Modules_Figures/Biblio_Books.png' },
+      { href: 'index_biblio_verbete.html', title: 'Bibliografia de Verbetes', description: 'Listagem e bibliografia de verbetes da Enciclopédia da Conscienciologia', image: '/Modules_Figures/Biblio_EC.png' },
     ],
   },
   {
@@ -86,17 +101,17 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
         href: 'https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt',
         title: 'ConsGPT',
         description: 'ChatGPT da OpenAI',
-        illustration: ConsGptIllustration,
+        image: '/Modules_Figures/ConsGPT_New.png',
         external: true,
       },
       {
         href: 'https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67',
         title: 'ConsLM',
         description: 'NotebookLM da Google',
-        illustration: ConsLmIllustration,
+        image: '/Modules_Figures/ConsLM_New.png',
         external: true,
       },
-      { href: 'index_ragbot.html', title: 'ConsBOT', description: 'Chatbot da Conscienciologia', illustration: ConsBotIllustration },
+      { href: 'index_ragbot.html', title: 'ConsBOT', description: 'Chatbot da Conscienciologia', image: '/Modules_Figures/ConsBOT_New.png' },
     ],
   },
   {
@@ -104,9 +119,9 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
     title: 'Busca IA',
     subtitle: 'Busca de Palavras em Livros',
     modules: [
-      { href: 'index_search_book.html', title: 'Livros & Tratados', description: 'Busca de palavras em livros', image: '/Modules_Figures/Dict.jpg' },
-      { href: 'index_search_verb.html', title: 'Definologia de Verbetes', description: 'Busca na Definologia dos verbetes', illustration: SearchVerbIllustration },
-      { href: 'index_search_ccg.html', title: 'Questões do Conscienciograma', description: 'Busca no Conscienciograma', illustration: SearchCcgIllustration },
+      { href: 'index_search_book.html', title: 'Livros & Tratados', description: 'Busca de palavras nos livros e tratados de Waldo Vieira', image: '/Modules_Figures/Book_Search_New.png' },
+      { href: 'index_search_verb.html', title: 'Definologia de Verbetes', description: 'Busca na Definologia dos verbetes (não apenas nos títulos)', image: '/Modules_Figures/Busca_Verbetes.png' },
+      { href: 'index_search_ccg.html', title: 'Questões do Conscienciograma', description: 'Busca nas questões do Conscienciograma', image: '/Modules_Figures/Busca_Conscienciograma.png' },
     ],
   },
   {
