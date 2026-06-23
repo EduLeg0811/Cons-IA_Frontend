@@ -45,7 +45,7 @@ function loadRuntimeConfig(): AppConfig {
 
 export const CONFIG: AppConfig = loadRuntimeConfig();
 
-const LOCAL_BASE = 'https://cons-ai-server.onrender.com';
+const LOCAL_BASE = 'http://127.0.0.1:5000';
 const PROD_BASE = 'https://cons-ai-server.onrender.com';
 
 function isLocalLikeApi(value: string): boolean {
