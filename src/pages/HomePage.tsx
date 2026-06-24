@@ -1,24 +1,35 @@
 import { useState } from 'react';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { ToolCard } from '../components/ToolCard';
 import { useTheme } from '../lib/theme';
 import { logFeatureAccess } from '../lib/config';
 
-const PANEL_ACCENTS: Record<string, string> = {
-  apps: 'border-t-apps-primary',
-  biblio: 'border-t-biblio-primary',
-  bots: 'border-t-bots-primary',
-  search: 'border-t-search-primary',
-  utils: 'border-t-utils-primary',
+const PANEL_TONES: Record<string, string> = {
+  apps: 'blush',
+  biblio: 'butter',
+  bots: 'mint',
+  search: 'sky',
+  utils: 'peach',
 };
 
 function Panel({ accent, title, subtitle, children }: { accent: string; title: string; subtitle: string; children: React.ReactNode }) {
+  const tone = PANEL_TONES[accent] ?? 'sand';
   return (
-    <div className={`rounded-2xl border-t-4 border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 ${PANEL_ACCENTS[accent]}`}>
+    <div
+      className="fade-in relative overflow-hidden rounded-3xl border bg-white p-6 shadow-[0_8px_24px_-12px_rgba(80,70,120,0.10)] dark:border-gray-700 dark:bg-gray-800"
+      style={{ borderColor: `var(--tone-${tone}-soft)` }}
+    >
+      <span className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: `var(--tone-${tone}-strong)` }} />
       <div className="mb-3 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{title}</h2>
-        <em className="text-sm text-gray-500 dark:text-gray-400">{subtitle}</em>
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{title}</h2>
+        <span
+          className="mt-0.5 inline-block text-xs font-semibold uppercase tracking-[0.14em]"
+          style={{ color: `var(--tone-${tone}-strong)` }}
+        >
+          {subtitle}
+        </span>
       </div>
-      <div className="grid gap-3">{children}</div>
+      <div className="grid gap-3 font-body">{children}</div>
     </div>
   );
 }
@@ -89,16 +100,30 @@ export function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => logClick('homepage_banner', 'New', 'https://cons-ia.org/new.html')}
-            className="mb-8 flex items-center justify-between rounded-2xl bg-gradient-to-r from-apps-primary to-apps-secondary px-6 py-5 text-white shadow-lg transition-transform hover:-translate-y-0.5"
+            className="fade-in tint-lilac group relative mb-8 flex items-center justify-between overflow-hidden rounded-3xl border px-6 py-6 shadow-[0_8px_24px_-12px_rgba(80,70,120,0.10)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-12px_rgba(80,70,120,0.18)] dark:border-white/10 dark:bg-gray-900"
           >
-            <div>
-              <span className="text-xs font-semibold uppercase tracking-wide text-white/80">Nova experiência</span>
-              <h1 className="text-lg font-bold">Experimente a nova página de abertura do Cons-IA</h1>
-              <p className="text-sm text-white/80">https://cons-ia.org/new.html</p>
+            <span className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: 'var(--tone-lilac-strong)' }} />
+            <span className="shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+            <div className="relative z-10 font-body">
+              <span
+                className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em]"
+                style={{ color: 'var(--tone-lilac-strong)' }}
+              >
+                <Sparkles className="h-3.5 w-3.5" strokeWidth={2.25} />
+                Nova experiência
+              </span>
+              <h1 className="mt-1.5 font-display text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+                Experimente a nova página de abertura do Cons-IA
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">https://cons-ia.org/new.html</p>
             </div>
-            <div className="flex items-center gap-2 text-sm font-medium">
+            <div
+              className="relative z-10 flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold tracking-wide text-white shadow-sm transition-transform group-hover:scale-105"
+              style={{ backgroundColor: 'var(--tone-lilac-strong)' }}
+            >
               <span>Abrir</span>
-              <i className="fas fa-arrow-up-right-from-square" />
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" strokeWidth={2.5} />
             </div>
           </a>
 

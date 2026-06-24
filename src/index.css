@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -18,4 +19,78 @@
   --color-error-bg: #fef2f2;
   --color-error-border: #fecaca;
   --color-error-text: #dc2626;
+
+  --font-serif-display: 'Lora', ui-serif, Georgia, serif;
+  --font-sans-body: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------- Pastel design tokens (OKLCH) ---------------- */
+:root {
+  --tone-blush-soft: oklch(94% 0.035 5);
+  --tone-blush-strong: oklch(58% 0.16 5);
+  --tone-peach-soft: oklch(94% 0.045 45);
+  --tone-peach-strong: oklch(62% 0.16 45);
+  --tone-butter-soft: oklch(95% 0.05 95);
+  --tone-butter-strong: oklch(65% 0.14 95);
+  --tone-mint-soft: oklch(94% 0.045 155);
+  --tone-mint-strong: oklch(58% 0.13 155);
+  --tone-sky-soft: oklch(94% 0.04 230);
+  --tone-sky-strong: oklch(55% 0.13 230);
+  --tone-lilac-soft: oklch(94% 0.04 290);
+  --tone-lilac-strong: oklch(56% 0.15 290);
+  --tone-sand-soft: oklch(95% 0.025 70);
+  --tone-sand-strong: oklch(55% 0.05 70);
+}
+
+@theme inline {
+  --color-tone-blush-soft: var(--tone-blush-soft);
+  --color-tone-blush-strong: var(--tone-blush-strong);
+  --color-tone-peach-soft: var(--tone-peach-soft);
+  --color-tone-peach-strong: var(--tone-peach-strong);
+  --color-tone-butter-soft: var(--tone-butter-soft);
+  --color-tone-butter-strong: var(--tone-butter-strong);
+  --color-tone-mint-soft: var(--tone-mint-soft);
+  --color-tone-mint-strong: var(--tone-mint-strong);
+  --color-tone-sky-soft: var(--tone-sky-soft);
+  --color-tone-sky-strong: var(--tone-sky-strong);
+  --color-tone-lilac-soft: var(--tone-lilac-soft);
+  --color-tone-lilac-strong: var(--tone-lilac-strong);
+  --color-tone-sand-soft: var(--tone-sand-soft);
+  --color-tone-sand-strong: var(--tone-sand-strong);
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-serif-display); }
+  .font-body { font-family: var(--font-sans-body); }
+
+  .tint-blush { background-color: var(--tone-blush-soft); border-color: var(--tone-blush-strong); }
+  .tint-peach { background-color: var(--tone-peach-soft); border-color: var(--tone-peach-strong); }
+  .tint-butter { background-color: var(--tone-butter-soft); border-color: var(--tone-butter-strong); }
+  .tint-mint { background-color: var(--tone-mint-soft); border-color: var(--tone-mint-strong); }
+  .tint-sky { background-color: var(--tone-sky-soft); border-color: var(--tone-sky-strong); }
+  .tint-lilac { background-color: var(--tone-lilac-soft); border-color: var(--tone-lilac-strong); }
+  .tint-sand { background-color: var(--tone-sand-soft); border-color: var(--tone-sand-strong); }
+
+  .tone-text { color: var(--tone-strong); }
+  .tone-bg-soft { background-color: var(--tone-soft); }
+  .tone-border { border-color: var(--tone-strong); }
+
+  .ring-tone { box-shadow: 0 0 0 1px var(--tone-strong); }
+
+  .fade-in { animation: fade-in 0.5s ease-out both; }
+  .shimmer {
+    background: linear-gradient(110deg, transparent 35%, color-mix(in oklch, white 55%, transparent) 50%, transparent 65%);
+    background-size: 220% 100%;
+    animation: shimmer 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -20% 0; }
 }
