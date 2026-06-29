@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ComponentType } from 'react';
+import { Moon, Sun } from 'lucide-react';
 import { AppTile, type IllustrationProps } from '../components/AppTile';
 import {
   BiblioVerbeteIllustration,
@@ -174,33 +175,50 @@ export function GalleryHomePage() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 top-0 z-50 h-[70px] border-b border-gray-200 bg-white/95 backdrop-blur-xl dark:border-gray-700 dark:bg-gray-900/95">
-        <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between px-6">
-          <a href="index.html" title="Voltar à página inicial" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-            <img src="/icon.png" alt="Cons-IA" className="h-8 w-8" />
+      <nav className="sticky top-0 z-30 border-b border-gray-200/50 bg-white/70 backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+          <a href="index.html" title="Voltar à página inicial" className="group flex items-center gap-3">
+            <img
+              src="/icon.png"
+              alt="Cons-IA"
+              className="h-9 w-9 transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(124,58,237,0.4)]"
+            />
+            <span className="flex items-baseline gap-2">
+              <span className="font-display text-3xl tracking-tight text-gray-900 dark:text-gray-100">
+                Cons-<span style={{ color: 'var(--tone-lilac-strong)' }}>IA</span>
+              </span>
+              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">Vitrine de Apps</span>
+            </span>
           </a>
-
-          <div className="flex flex-1 flex-col items-center justify-center text-center">
-            <div className="text-lg font-bold text-gray-900 dark:text-gray-100">Vitrine de Apps</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">Cons-IA · Toolbox de IA da Conscienciologia</div>
-          </div>
 
           <button
             type="button"
             title="Toggle Theme"
             onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="nav-icon-btn group flex h-10 w-10 items-center justify-center rounded-full border border-gray-200/60 bg-white/60 text-gray-600 transition-colors dark:border-gray-700/60 dark:bg-gray-800/60 dark:text-gray-300"
           >
-            <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} />
+            {theme === 'dark' ? (
+              <Sun className="h-[18px] w-[18px] transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.5} />
+            ) : (
+              <Moon className="h-[18px] w-[18px] transition-transform duration-300 group-hover:-rotate-12" strokeWidth={1.5} />
+            )}
           </button>
         </div>
       </nav>
 
-      <main className="min-h-[calc(100vh-70px)] bg-gray-50 px-6 py-12 pt-[94px] dark:bg-gray-950">
+      <main className="min-h-[calc(100vh-70px)] bg-gray-50 px-6 py-12 dark:bg-gray-950">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-10 text-center">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Vitrine de Apps</h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Explore os módulos do Cons-IA, organizados como uma loja de aplicativos.</p>
+          <div className="mb-12 pt-8 text-center">
+            <h1 className="font-display text-5xl leading-[1.05] text-gray-900 sm:text-6xl dark:text-gray-100">
+              Explore o universo de ferramentas
+              <br />
+              <span className="italic" style={{ color: 'color-mix(in oklch, var(--tone-lilac-strong) 80%, transparent)' }}>
+                da Conscienciologia
+              </span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              {SECTIONS.map((s) => s.title).join(' • ')}
+            </p>
           </div>
 
           <div className="flex flex-col gap-12">

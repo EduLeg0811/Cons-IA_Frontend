@@ -63,6 +63,11 @@
   .font-display { font-family: var(--font-serif-display); }
   .font-body { font-family: var(--font-sans-body); }
 
+  .nav-icon-btn:hover {
+    border-color: var(--tone-lilac-soft);
+    color: var(--tone-lilac-strong);
+  }
+
   .tint-blush { background-color: var(--tone-blush-soft); border-color: var(--tone-blush-strong); }
   .tint-peach { background-color: var(--tone-peach-soft); border-color: var(--tone-peach-strong); }
   .tint-butter { background-color: var(--tone-butter-soft); border-color: var(--tone-butter-strong); }
