@@ -3,12 +3,12 @@ import type { ComponentType } from 'react';
 type Category = 'apps' | 'biblio' | 'bots' | 'search' | 'utils' | 'estudo';
 
 export const CATEGORY_COLORS: Record<Category, { primary: string; secondary: string }> = {
-  apps: { primary: '#ec4899', secondary: '#f472b6' },
+  apps: { primary: '#7c3aed', secondary: '#a855f7' },
   biblio: { primary: '#edc93a', secondary: '#f6da5b' },
   bots: { primary: '#10b981', secondary: '#34d399' },
   search: { primary: '#0ea5e9', secondary: '#38bdf8' },
   utils: { primary: '#f87171', secondary: '#fca5a5' },
-  estudo: { primary: '#7c3aed', secondary: '#a855f7' },
+  estudo: { primary: '#ec4899', secondary: '#f472b6' },
 };
 
 const RING_CLASSES: Record<Category, string> = {
@@ -68,8 +68,8 @@ export function AppTile({ href, title, description, illustration: Illustration, 
       </div>
 
       <div className="flex flex-1 flex-col gap-1 border-t border-gray-100 p-4 text-left dark:border-gray-700">
-        <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h3>
-        <p className="line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{description}</p>
+        <h3 className="font-display text-base font-semibold tracking-tight text-gray-900 dark:text-gray-100">{title}</h3>
+        <p className="font-body line-clamp-2 text-sm text-gray-500 dark:text-gray-400">{description}</p>
       </div>
     </a>
   );

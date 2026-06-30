@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Info, Moon, Sparkles, Sun } from 'lucide-react';
 import { ToolCard } from '../components/ToolCard';
 import { useTheme } from '../lib/theme';
 import { logFeatureAccess } from '../lib/config';
+
+const SECTION_TITLES = ['Apps IA', 'Bibliografia IA', 'Bots IA', 'Busca IA', 'Links Externos'];
 
 const PANEL_TONES: Record<string, string> = {
   apps: 'blush',
@@ -66,35 +68,64 @@ export function HomePage() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 top-0 z-50 h-[70px] border-b border-gray-200 bg-white/95 backdrop-blur-xl dark:border-gray-700 dark:bg-gray-900/95">
-        <div className="mx-auto flex h-full max-w-[1400px] items-center justify-between px-6">
-          <button
-            type="button"
-            title="Mostrar/ocultar descrições"
-            onClick={() => setShowInfo((v) => !v)}
-            className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
-          >
-            <img src="/icon.png" alt="Books in the Parabrain" className="h-8 w-8" />
-          </button>
+      <nav className="sticky top-0 z-30 border-b border-gray-200/50 bg-white/70 backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+          <span className="flex items-center gap-3">
+            <img
+              src="/icon.png"
+              alt="Cons-IA"
+              className="h-9 w-9 transition-transform duration-300 hover:scale-110 hover:drop-shadow-[0_0_8px_rgba(124,58,237,0.4)]"
+            />
+            <span className="flex items-baseline gap-2">
+              <span className="font-display text-3xl tracking-tight text-gray-900 dark:text-gray-100">
+                Cons<span className="italic" style={{ color: 'var(--tone-lilac-strong)' }}>IA</span>
+              </span>
+              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">
+                Toolbox de IA
+              </span>
+            </span>
+          </span>
 
-          <div className="flex flex-1 flex-col items-center justify-center text-center">
-            <div className="text-lg font-bold text-gray-900 dark:text-gray-100">Cons-IA</div>
-            <div className="text-xs text-gray-500 dark:text-gray-400">Toolbox de IA da Conscienciologia</div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              title="Mostrar/ocultar descrições"
+              onClick={() => setShowInfo((v) => !v)}
+              className="nav-icon-btn flex h-10 w-10 items-center justify-center rounded-full border border-gray-200/60 bg-white/60 text-gray-600 transition-colors dark:border-gray-700/60 dark:bg-gray-800/60 dark:text-gray-300"
+            >
+              <Info className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            </button>
+            <button
+              type="button"
+              title="Toggle Theme"
+              onClick={toggleTheme}
+              className="nav-icon-btn group flex h-10 w-10 items-center justify-center rounded-full border border-gray-200/60 bg-white/60 text-gray-600 transition-colors dark:border-gray-700/60 dark:bg-gray-800/60 dark:text-gray-300"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-[18px] w-[18px] transition-transform duration-300 group-hover:rotate-45" strokeWidth={1.5} />
+              ) : (
+                <Moon className="h-[18px] w-[18px] transition-transform duration-300 group-hover:-rotate-12" strokeWidth={1.5} />
+              )}
+            </button>
           </div>
-
-          <button
-            type="button"
-            title="Toggle Theme"
-            onClick={toggleTheme}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            <i className={theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'} />
-          </button>
         </div>
       </nav>
 
-      <main className="min-h-[calc(100vh-70px)] bg-gray-100 px-6 py-12 pt-[94px] dark:bg-gray-950">
+      <main className="min-h-[calc(100vh-70px)] bg-gray-100 px-6 py-12 dark:bg-gray-950">
         <div className="mx-auto max-w-[1400px]">
+          <div className="mb-12 pt-8 text-center">
+            <h1 className="font-display text-5xl leading-[1.05] text-gray-900 sm:text-6xl dark:text-gray-100">
+              Inteligência Artificial
+              <br />
+              <span className="italic" style={{ color: 'color-mix(in oklch, var(--tone-lilac-strong) 80%, transparent)' }}>
+                a serviço da Conscienciologia
+              </span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-gray-500 dark:text-gray-400">
+              {SECTION_TITLES.join(' • ')}
+            </p>
+          </div>
+
           <a
             href="https://cons-ia.org/new.html"
             target="_blank"

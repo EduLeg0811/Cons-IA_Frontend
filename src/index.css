@@ -4,8 +4,8 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
-  --color-apps-primary: #ec4899;
-  --color-apps-secondary: #f472b6;
+  --color-apps-primary: #7c3aed;
+  --color-apps-secondary: #a855f7;
   --color-search-primary: #0ea5e9;
   --color-search-secondary: #38bdf8;
   --color-biblio-primary: #edc93a;
@@ -14,14 +14,36 @@
   --color-bots-secondary: #34d399;
   --color-utils-primary: #f87171;
   --color-utils-secondary: #fca5a5;
-  --color-estudo-primary: #7c3aed;
-  --color-estudo-secondary: #a855f7;
+  --color-estudo-primary: #ec4899;
+  --color-estudo-secondary: #f472b6;
   --color-error-bg: #fef2f2;
   --color-error-border: #fecaca;
   --color-error-text: #dc2626;
 
   --font-serif-display: 'Lora', ui-serif, Georgia, serif;
   --font-sans-body: 'Nunito Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono-code: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, monospace;
+
+  --font-sans: var(--font-sans-body);
+  --font-serif: var(--font-serif-display);
+  --font-mono: var(--font-mono-code);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans-body);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  code, pre, kbd, samp {
+    font-family: var(--font-mono-code);
+  }
 }
 
 /* ---------------- Pastel design tokens (OKLCH) ---------------- */

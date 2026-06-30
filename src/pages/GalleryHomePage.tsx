@@ -61,6 +61,12 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
         image: '/Modules_Figures/Lexicons_New_noWords.png',
         external: true,
       },
+      {
+        href: 'https://conswiki.onrender.com',
+        title: 'Cons Wiki LLM',
+        description: 'Wiki da Conscienciologia com IA',
+        external: true,
+      },
     ],
   },
   {
@@ -185,9 +191,9 @@ export function GalleryHomePage() {
             />
             <span className="flex items-baseline gap-2">
               <span className="font-display text-3xl tracking-tight text-gray-900 dark:text-gray-100">
-                Cons-<span style={{ color: 'var(--tone-lilac-strong)' }}>IA</span>
+                Cons<span className="italic" style={{ color: 'var(--tone-lilac-strong)' }}> IA</span>
               </span>
-              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">Vitrine de Apps</span>
+              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">Vitrine de Aplicativos</span>
             </span>
           </a>
 
@@ -210,7 +216,7 @@ export function GalleryHomePage() {
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 pt-8 text-center">
             <h1 className="font-display text-5xl leading-[1.05] text-gray-900 sm:text-6xl dark:text-gray-100">
-              Explore o universo de ferramentas
+              Explore as ferramentas de IA
               <br />
               <span className="italic" style={{ color: 'color-mix(in oklch, var(--tone-lilac-strong) 80%, transparent)' }}>
                 da Conscienciologia

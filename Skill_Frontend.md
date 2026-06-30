@@ -6,10 +6,10 @@ Este documento estabelece as diretrizes de design, tipografia, paletas de cores 
 
 ## 1. Tipografia e Fontes
 Para obter uma atmosfera premium, intelectual e limpa, a tipografia combina duas famílias tipográficas contrastantes:
-*   **Fonte Serifada (Títulos e Destaques):** Utilizar `"Lora"` (ou alternativas de alta qualidade como `"Spectral"`, `Georgia` ou `serif`).
+*   **Fonte Serifada (Títulos e Destaques):** Utilizar `"Lora"`.
     *   **Estilo:** Peso médio (`font-weight: 500`), com espaçamento entre letras levemente reduzido (`letter-spacing: -0.015em`).
     *   **Uso:** Cabeçalho principal do produto, títulos de seções principais (`h1`, `h2`) e elementos marcados com a classe `.font-display`.
-*   **Fonte Sans-serif (Interface e Textos de Suporte):** Utilizar `"Nunito Sans"` (ou alternativas limpas como `system-ui`, `-apple-system`, `sans-serif`).
+*   **Fonte Sans-serif (Interface e Textos de Suporte):** Utilizar `"Nunito Sans"`.
     *   **Estilo:** Otimizada para leitura de dados com suporte a recursos avançados de renderização (`font-feature-settings: "ss01", "cv11"`).
     *   **Uso:** Navegação, subtítulos informativos, botões, campos de entrada e textos explicativos.
 
@@ -45,7 +45,12 @@ O cabeçalho superior organiza a identidade da aplicação e as configurações 
 ### Componentes Internos
 1.  **Grupo da Esquerda (Identidade):**
     *   **Logo/Ícone:** Envolto em link com transições suaves no pairar do mouse (`hover:scale-110 duration-300 hover:filter hover:drop-shadow-[0_0_8px_rgba(Matiz_Primaria,0.4)]`).
-    *   **Nome do Projeto:** Texto serifado tamanho grande (`font-display text-3xl tracking-tight text-foreground`), destacando o sufixo ou marca final na cor primária.
+    *   **Nome do Projeto:** Texto serifado com as seguintes especificações aplicadas no título principal "LexiCons":
+        *   **Fonte:** Serifada `"Lora"`.
+        *   **Tamanho:** `25px`.
+        *   **Peso:** `500`.
+        *   **Espaçamento (letter-spacing):** `-0.025em`.
+        *   **Estilo das Partes:** "Lexi" normal (não itálico) e "Cons" itálico e na cor primária (`text-primary`).
     *   **Sufixo de Categoria:** Texto pequeno em caixa alta (`text-xs uppercase tracking-[0.22em] text-muted-foreground`), oculto em telas muito pequenas (`hidden sm:inline`).
 2.  **Grupo da Direita (Ações/Configurações):**
     *   Agrupamento horizontal (`flex items-center gap-2`).
@@ -90,3 +95,27 @@ O controle de tema é implementado com transições fluidas e micro-animações 
 *   O botão circular de controle alterna dinamicamente entre dois ícones de linha fina (`strokeWidth={1.5}`) com tamanho de `18px`:
     *   **Lua (Ativar Modo Escuro):** Visível no modo claro. Ao pairar o mouse (`hover`), realiza uma leve rotação de 12 graus no sentido anti-horário (`transition-transform duration-300 group-hover:-rotate-12`).
     *   **Sol (Ativar Modo Claro):** Visível no modo escuro. Ao pairar o mouse (`hover`), realiza uma rotação de 45 graus no sentido horário (`transition-transform duration-300 group-hover:rotate-45`).
+
+---
+
+## 6. Stack de Tecnologias Padrão (Ecosistema Modular)
+
+Para garantir consistência, modularidade e harmonia de identidade entre as aplicações da plataforma, adota-se uma stack padronizada de tecnologias modernas:
+
+### Frontend (SPA - Single Page Application)
+A arquitetura do cliente é unificada sob as seguintes tecnologias:
+*   **React 19:** Biblioteca principal para a composição da interface através de componentes reativos e modulares.
+*   **Vite 7:** Ferramenta de build ultra-rápida que serve como ambiente de desenvolvimento e empacotador de produção.
+*   **TypeScript 5:** Tipagem estática e segurança em tempo de compilação.
+*   **Tailwind CSS v4:** Motor CSS utilitário para uma estilização ágil, integrada nativamente ao Vite por meio de compiladores otimizados (`@tailwindcss/vite`).
+*   **TanStack React Query v5:** Camada de gerenciamento de estado assíncrono para cache de requisições e sincronização de dados com serviços externos.
+*   **Lucide React:** Biblioteca padrão de ícones em vetor com consistência visual e suporte a customizações via propriedades de traço (`strokeWidth`).
+*   **Ferramental de Padronização:** Prettier e ESLint para formatação e análise estática de código automatizada.
+
+### Backend (Serviços e APIs)
+A camada de serviços adota uma stack rápida e de baixo consumo de recursos:
+*   **FastAPI:** Framework web moderno em Python, altamente performático, projetado para expor endpoints assíncronos e autotestar APIs.
+*   **Uvicorn:** Servidor ASGI para servir as aplicações e endpoints locais e produtivos de maneira resiliente.
+
+### Orquestração de Desenvolvimento
+As aplicações contam com scripts de inicialização unificados que lançam simultaneamente o servidor de frontend e o de backend em subprocessos, permitindo que os desenvolvedores executem o ambiente completo com um único comando de console, mantendo logs unificados e limpeza automática de portas de rede em caso de encerramento.
