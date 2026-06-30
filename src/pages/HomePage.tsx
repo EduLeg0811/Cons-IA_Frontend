@@ -68,19 +68,20 @@ export function HomePage() {
 
   return (
     <>
-      <nav className="sticky top-0 z-30 border-b border-gray-200/50 bg-white/70 backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70">
+      <nav className="sticky top-0 z-30 border-b border-border/50 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <span className="flex items-center gap-3">
             <img
               src="/icon.png"
               alt="Cons-IA"
-              className="h-9 w-9 transition-transform duration-300 hover:scale-110 hover:drop-shadow-[0_0_8px_rgba(124,58,237,0.4)]"
+              className="h-12 w-12 transition-transform duration-300 hover:scale-110 hover:drop-shadow-[0_0_8px_color-mix(in_oklch,var(--primary)_40%,transparent)]"
             />
-            <span className="flex items-baseline gap-2">
-              <span className="font-display text-3xl tracking-tight text-gray-900 dark:text-gray-100">
-                Cons<span className="italic" style={{ color: 'var(--tone-lilac-strong)' }}>IA</span>
+            <span className="flex items-center gap-5">
+              <span className="font-display text-3xl tracking-tight text-foreground">
+                Cons<span className="italic text-primary"> IA</span>
               </span>
-              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">
+              <span className="hidden h-4 w-px bg-border sm:inline" />
+              <span className="hidden text-xs uppercase tracking-[0.22em] text-muted-foreground sm:inline">
                 Toolbox de IA
               </span>
             </span>
@@ -118,20 +119,21 @@ export function HomePage() {
               Inteligência Artificial
               <br />
               <span className="italic" style={{ color: 'color-mix(in oklch, var(--tone-lilac-strong) 80%, transparent)' }}>
-                a serviço da Conscienciologia
+                a serviço da Consciência
               </span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-gray-500 dark:text-gray-400">
               {SECTION_TITLES.join(' • ')}
             </p>
           </div>
-
+          {/*
           <a
             href="https://cons-ia.org/new.html"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => logClick('homepage_banner', 'New', 'https://cons-ia.org/new.html')}
-            className="fade-in tint-lilac group relative mb-8 flex items-center justify-between overflow-hidden rounded-3xl border px-6 py-6 shadow-[0_8px_24px_-12px_rgba(80,70,120,0.10)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-12px_rgba(80,70,120,0.18)] dark:border-white/10 dark:bg-gray-900"
+            className="fade-in bg-white group relative mb-8 flex items-center justify-between overflow-hidden rounded-3xl border px-6 py-6 shadow-[0_8px_24px_-12px_rgba(80,70,120,0.10)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_14px_32px_-12px_rgba(80,70,120,0.18)] dark:border-white/10 dark:bg-gray-900"
+            style={{ borderColor: 'var(--tone-lilac-strong)' }}
           >
             <span className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: 'var(--tone-lilac-strong)' }} />
             <span className="shimmer pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -158,7 +160,20 @@ export function HomePage() {
             </div>
           </a>
 
-          <div className="mb-8 -mt-4 text-center">
+ */}
+          <div className="mb-8 -mt-4 text-left">
+            <a
+              href="new.html"
+              onClick={() => logClick('homepage_new_link', 'New Landscape View', 'new.html')}
+              className="text-sm text-gray-500 hover:text-apps-primary hover:underline dark:text-gray-400"
+            >
+              Experimente a nova versão da página de abertura →
+            </a>
+          </div>
+
+
+
+          <div className="mb-8 -mt-4 text-left">
             <a
               href="gallery.html"
               onClick={() => logClick('homepage_gallery_link', 'Versao Vitrine', 'gallery.html')}

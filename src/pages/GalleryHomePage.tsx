@@ -36,6 +36,7 @@ const SECTION_LABEL_CLASSES: Record<Category, string> = {
 };
 
 const SECTIONS: { category: Category; title: string; subtitle: string; modules: ModuleEntry[] }[] = [
+
   {
     category: 'apps',
     title: 'Apps IA',
@@ -48,14 +49,14 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
         image: '/Modules_Figures/LO_New.png'
       },
       {
-        href: 'https://verbetograma.streamlit.app/',
+        href: 'https://verbetograma.onrender.com/',
         title: 'Revisão Verbetográfica',
         description: 'Auditoria nos verbetes antes da entrega',
         image: '/Modules_Figures/Verbetogram.png',
         external: true,
       },
       {
-        href: 'https://lexicons-g86o.onrender.com',
+        href: 'https://lexicons-frontend.onrender.com/',
         title: 'Lexicons',
         description: 'Dissecção lexicográfica',
         image: '/Modules_Figures/Lexicons_New_noWords.png',
@@ -64,11 +65,71 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
       {
         href: 'https://conswiki.onrender.com',
         title: 'Cons Wiki LLM',
-        description: 'Wiki da Conscienciologia com IA',
+        description: 'Wiki da Conscienciologia',
+        image: '/Modules_Figures/ConsWiki - 3d.png',
         external: true,
       },
     ],
   },
+
+  {
+    category: 'search',
+    title: 'Busca IA',
+    subtitle: 'Busca de Palavras em Livros',
+    modules: [
+      { href: 'index_search_book.html', title: 'Livros & Tratados', description: 'Busca de palavras nos livros e tratados de Waldo Vieira', image: '/Modules_Figures/Book_Search_New.png' },
+      { href: 'index_search_verb.html', title: 'Definologia de Verbetes', description: 'Busca na Definologia dos verbetes (não apenas nos títulos)', image: '/Modules_Figures/Busca_Verbetes.png' },
+      { href: 'index_search_ccg.html', title: 'Questões do Conscienciograma', description: 'Busca nas questões do Conscienciograma', image: '/Modules_Figures/Busca_Conscienciograma.png' },
+    ],
+  },
+
+  {
+    category: 'biblio',
+    title: 'Bibliografia IA',
+    subtitle: 'Referências de Livros, Artigos e Verbetes',
+    modules: [
+      {
+        href: 'index_biblio_wv.html',
+        title: 'Bibliografia de Livros',
+        description: 'Bibliografia de livros e tratados de Waldo Vieira',
+        image: '/Modules_Figures/Biblio_Books.png'
+      },
+      {
+        href: 'index_biblio_verbete.html',
+        title: 'Bibliografia de Verbetes',
+        description: 'Listagem e bibliografia de verbetes da Enciclopédia da Conscienciologia',
+        image: '/Modules_Figures/Biblio_EC.png'
+      },
+    ],
+  },
+  {
+    category: 'bots',
+    title: 'Bots IA',
+    subtitle: 'Assistentes de Conversação',
+    modules: [
+      {
+        href: 'https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt',
+        title: 'ConsGPT',
+        description: 'ChatGPT da OpenAI',
+        image: '/Modules_Figures/ConsGPT - 3d.png',
+        external: true,
+      },
+      {
+        href: 'https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67',
+        title: 'ConsLM',
+        description: 'NotebookLM da Google',
+        image: '/Modules_Figures/ConsLM - 3d.png',
+        external: true,
+      },
+      {
+        href: 'index_ragbot.html',
+        title: 'ConsBOT',
+        description: 'Chatbot da Conscienciologia',
+        image: '/Modules_Figures/ConsBOT - 3d.png'
+      },
+    ],
+  },
+
   {
     category: 'estudo',
     title: 'Estudo IA',
@@ -91,47 +152,6 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
     ],
   },
   {
-    category: 'biblio',
-    title: 'Bibliografia IA',
-    subtitle: 'Referências de Livros, Artigos e Verbetes',
-    modules: [
-      { href: 'index_biblio_wv.html', title: 'Bibliografia de Livros', description: 'Bibliografia de livros e tratados de Waldo Vieira', image: '/Modules_Figures/Biblio_Books.png' },
-      { href: 'index_biblio_verbete.html', title: 'Bibliografia de Verbetes', description: 'Listagem e bibliografia de verbetes da Enciclopédia da Conscienciologia', image: '/Modules_Figures/Biblio_EC.png' },
-    ],
-  },
-  {
-    category: 'bots',
-    title: 'Bots IA',
-    subtitle: 'Assistentes de Conversação',
-    modules: [
-      {
-        href: 'https://chatgpt.com/g/g-68a5d68b96c4819189dd1e6fb0def83f-consgpt',
-        title: 'ConsGPT',
-        description: 'ChatGPT da OpenAI',
-        image: '/Modules_Figures/ConsGPT_New.png',
-        external: true,
-      },
-      {
-        href: 'https://notebooklm.google.com/notebook/c3528e65-0c2b-4a80-b3f2-2f22e3626b67',
-        title: 'ConsLM',
-        description: 'NotebookLM da Google',
-        image: '/Modules_Figures/ConsLM_New.png',
-        external: true,
-      },
-      { href: 'index_ragbot.html', title: 'ConsBOT', description: 'Chatbot da Conscienciologia', image: '/Modules_Figures/ConsBOT_New.png' },
-    ],
-  },
-  {
-    category: 'search',
-    title: 'Busca IA',
-    subtitle: 'Busca de Palavras em Livros',
-    modules: [
-      { href: 'index_search_book.html', title: 'Livros & Tratados', description: 'Busca de palavras nos livros e tratados de Waldo Vieira', image: '/Modules_Figures/Book_Search_New.png' },
-      { href: 'index_search_verb.html', title: 'Definologia de Verbetes', description: 'Busca na Definologia dos verbetes (não apenas nos títulos)', image: '/Modules_Figures/Busca_Verbetes.png' },
-      { href: 'index_search_ccg.html', title: 'Questões do Conscienciograma', description: 'Busca nas questões do Conscienciograma', image: '/Modules_Figures/Busca_Conscienciograma.png' },
-    ],
-  },
-  {
     category: 'utils',
     title: 'Links Externos',
     subtitle: 'Páginas Úteis da Conscienciologia',
@@ -139,6 +159,8 @@ const SECTIONS: { category: Category; title: string; subtitle: string; modules: 
       { href: 'https://www.icge.org.br/', title: 'ICGE', description: 'Site do ICGE', illustration: GlobeIllustration, external: true },
       { href: 'https://enciclopediadaconscienciologia.org/', title: 'Enciclopédia da Conscienciologia', description: 'Download de verbetes', illustration: EnciclopediaIllustration, external: true },
       { href: 'https://periodicos.conscienciologia.org.br/', title: 'Portal de Periódicos', description: 'Portal de periódicos da Conscienciologia', illustration: PeriodicosIllustration, external: true },
+      { href: 'https://www.icge.org.br/?page_id=9973', title: 'Pesquisas em Vídeos', description: 'Pesquisas em Vídeos da Conscienciologia', illustration: EnciclopediaIllustration, external: true },
+
       {
         href: 'https://drive.google.com/drive/folders/1Mp6Zfhq-peIYlo9Js0wYRX2DnRjFYyUj?usp=sharing',
         title: 'Livros em PDF',
@@ -181,19 +203,20 @@ export function GalleryHomePage() {
 
   return (
     <>
-      <nav className="sticky top-0 z-30 border-b border-gray-200/50 bg-white/70 backdrop-blur-xl dark:border-gray-700/50 dark:bg-gray-900/70">
+      <nav className="sticky top-0 z-30 border-b border-border/50 bg-background/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <a href="index.html" title="Voltar à página inicial" className="group flex items-center gap-3">
             <img
               src="/icon.png"
               alt="Cons-IA"
-              className="h-9 w-9 transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(124,58,237,0.4)]"
+              className="h-12 w-12 transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_color-mix(in_oklch,var(--primary)_40%,transparent)]"
             />
-            <span className="flex items-baseline gap-2">
-              <span className="font-display text-3xl tracking-tight text-gray-900 dark:text-gray-100">
-                Cons<span className="italic" style={{ color: 'var(--tone-lilac-strong)' }}> IA</span>
+            <span className="flex items-center gap-5">
+              <span className="font-display text-3xl tracking-tight text-foreground">
+                Cons<span className="italic text-primary"> IA</span>
               </span>
-              <span className="hidden text-xs uppercase tracking-[0.22em] text-gray-400 dark:text-gray-500 sm:inline">Vitrine de Aplicativos</span>
+              <span className="hidden h-4 w-px bg-border sm:inline" />
+              <span className="hidden text-xs uppercase tracking-[0.22em] text-muted-foreground sm:inline">Vitrine de Aplicativos</span>
             </span>
           </a>
 
@@ -212,7 +235,7 @@ export function GalleryHomePage() {
         </div>
       </nav>
 
-      <main className="min-h-[calc(100vh-70px)] bg-gray-50 px-6 py-12 dark:bg-gray-950">
+      <main className="min-h-[calc(100vh-70px)] px-6 py-12" style={{ backgroundColor: 'var(--gallery-bg)' }}>
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 pt-8 text-center">
             <h1 className="font-display text-5xl leading-[1.05] text-gray-900 sm:text-6xl dark:text-gray-100">

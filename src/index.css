@@ -4,6 +4,12 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-border: var(--border);
+  --color-muted-foreground: var(--muted-foreground);
+
   --color-apps-primary: #7c3aed;
   --color-apps-secondary: #a855f7;
   --color-search-primary: #0ea5e9;
@@ -48,6 +54,12 @@
 
 /* ---------------- Pastel design tokens (OKLCH) ---------------- */
 :root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --primary: var(--tone-lilac-strong);
+  --border: rgba(229, 231, 235, 0.5);
+  --muted-foreground: #9ca3af;
+
   --tone-blush-soft: oklch(94% 0.035 5);
   --tone-blush-strong: oklch(58% 0.16 5);
   --tone-peach-soft: oklch(94% 0.045 45);
@@ -62,6 +74,18 @@
   --tone-lilac-strong: oklch(56% 0.15 290);
   --tone-sand-soft: oklch(95% 0.025 70);
   --tone-sand-strong: oklch(55% 0.05 70);
+
+  --gallery-bg: oklch(98.5% 0.012 290);
+}
+
+:root[data-theme="dark"] {
+  --background: #0b0f19;
+  --foreground: #f9fafb;
+  --primary: var(--tone-lilac-strong);
+  --border: rgba(55, 65, 81, 0.5);
+  --muted-foreground: #6b7280;
+
+  --gallery-bg: oklch(15% 0.018 290);
 }
 
 @theme inline {
